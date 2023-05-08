@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
-from .models import UserData
+from .models import UserData, Department
 from django import forms
-from django.urls import path
+from django.urls import path, reverse
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 import csv
@@ -15,6 +15,8 @@ class CsvImportForm(forms.Form):
 
 
 class UserDataControl(admin.ModelAdmin):
+    list_display = ("rollno", "name", "branch", "scgpa")
+
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [path('upload-csv/', self.upload_csv)]
@@ -45,7 +47,9 @@ class UserDataControl(admin.ModelAdmin):
                                                              total_credits=row[5],
                                                              total_grade=row[6])
                 # userdata.save()
-            print("data uploaded")
+            messages.success(
+                request, "Data has been uploaded from the CSV file")
+            return HttpResponseRedirect(request.path_info)
 
         form = CsvImportForm()
         body = {"form": form}
