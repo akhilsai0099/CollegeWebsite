@@ -39,13 +39,18 @@
     }
 
     .container {
-        margin-top: 100px;
+
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 60vh;
-        max-height: 80vh;
+        height: 100vh;
+    }
 
+    .form-container {
+        width: 40vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .loginform {
@@ -152,38 +157,49 @@
 
 <body>
     <div class="container">
+
         <div class="background-image"> </div>
-        <div class="loginform">
-            <div class="content">
-                <img src="https://dhondi.ai/logos/jntugv.png" alt="JNTU-GV" float="center" width="250" height="250">
+        <div class="form-container">
+            <div class="loginform">
+                <div class="content">
+                    <img src="https://dhondi.ai/logos/jntugv.png" alt="JNTU-GV" float="center" width="250" height="250">
+                </div>
+                <h1>Login</h1>
+                <form id="form" method="post" action="{% url 'course_application:loginView' %}">
+                    {% csrf_token %}
+                    <div class="tbox">
+                        <i class="fa fa-user"></i><input type="text" name="username" placeholder="Username"
+                            id="username">
+                    </div>
+                    <div class="tbox">
+                        <i class="fa fa-lock"></i><input type="password" name="password" placeholder="Password"
+                            id="password">
+                    </div>
+                    <div>
+                        <input type="checkbox" id="showpassword" onchange="myfunction()">
+                        <label for="showpassword">Show Password</label>
+                    </div>
+
+                    <button class="btn" type="submit">Login</button>
+                </form>
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert">
+                    {{message}}
+                </div>
+                {% endfor %}
+                {% endif %}
             </div>
-            <h1>Login</h1>
-            <form id="form" method="post" action="{% url 'course_application:loginView' %}">
-                {% csrf_token %}
-                <div class="tbox">
-                    <i class="fa fa-user"></i><input type="text" name="username" placeholder="Username" id="username">
-                </div>
-                <div class="tbox">
-                    <i class="fa fa-lock"></i><input type="password" name="password" placeholder="Password"
-                        id="password">
-                </div>
-                <div class="btn">
-
-
-                    <input class="front" type="submit" value="login">
-                </div>
-            </form>
-
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert">
-                {{message}}
-            </div>
-            {% endfor %}
-            {% endif %}
         </div>
     </div>
-
+    <script>
+        function myfunction() {
+            var passwordInput = document.getElementById("password");
+            var showPasswordCheckbox = document.getElementById("showpassword");
+            passwordInput.type = showPasswordCheckbox.checked ? "text" : "password";
+        }
+    </script>
 </body>
 
 </html>

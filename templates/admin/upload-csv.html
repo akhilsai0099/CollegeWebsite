@@ -5,8 +5,9 @@
     <form action="." method="POST" enctype="multipart/form-data">
         {{ form.as_p }}
         {% csrf_token %}
-        <button type="submit">Upload File</button>
+        <button type="submit" class="button">Upload File</button>
     </form>
-    <a href="/admin/AdminControl/userdata/"><button>Back</button></a>
+    <br>
+    <a href="/admin/AdminControl/userdata/" class="button">Back</a>
 </div>
 {% endblock %}

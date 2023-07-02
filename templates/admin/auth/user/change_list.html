@@ -1,9 +1,0 @@
-{% extends "admin/change_list.html" %}
-{% load static %}
-
-{% block content %}
-
-<a href="{% url 'course_application:create_users' %}" class="button">Add Users</a>
-<br>
-{{ block.super }}
-{% endblock %}

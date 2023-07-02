@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Form</title>
+    <title>Main Page</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             background-color: rgb(220 237 234);
+            text-align: center;
 
         }
 
@@ -54,7 +55,8 @@
             border: none;
         }
 
-        .container {
+        .container-fluid {
+            background-size: cover;
             justify-content: center;
             display: flex;
             flex-wrap: wrap;
@@ -185,7 +187,7 @@
         }
 
         @media(max-width:768px) {
-            .container {
+            .container-fluid {
                 justify-content: center;
                 flex-direction: column;
                 align-items: center
@@ -267,7 +269,7 @@
         }
 
         @media(max-width:480px) {
-            .container {
+            .container-fluid {
                 flex-direction: column;
                 align-items: center;
             }
@@ -447,7 +449,7 @@
         }
 
         @media (max-width:350px) {
-            .container {
+            .container-fluid {
                 width: 116%;
                 margin-left: -10px;
             }
@@ -460,6 +462,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ysabeau+Infant&display=swap" rel="stylesheet">
@@ -471,9 +474,10 @@
 <body>
     <div class="head">
 
-        <div class="container">
+        <div class="container-fluid">
             <div class="image">
-                <img src="https://dhondi.ai/logos/jntugv.png" alt="JNTU-GV Logo" float="left" height=130 width=130>
+                <a href="/"><img src="https://dhondi.ai/logos/jntugv.png" alt="JNTU-GV Logo" float="left" height=130
+                        width=130></a>
             </div>
             <div class="text">
                 <h1>JAWAHARLAL NEHRU TECHNOLOGICAL UNIVERSITY-GURAJADA VIZIANAGARAM</h1>
@@ -488,21 +492,23 @@
                 <label
                     style="height: 25px;  margin-bottom:29px; margin-top: 2px; margin-right: 19px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
                     Name </label>
-                <input type="text" value="{{name}}" name="name" class="username" readonly>
+                <input type="text" value="{{name}}" name="name" class="username" readonly style="border-style: outset;">
             </div>
 
             <div class="name">
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 8px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
                     RollNo </label>
-                <input type="text" value="{{rollno}}" name="roll" class="username" readonly>
+                <input type="text" value="{{rollno}}" name="roll" class="username" readonly
+                    style="border-style: outset;">
             </div>
 
             <div class="name">
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 32px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
                     Year </label>
-                <input type="text" name="branch" value="2nd Year" class="username" readonly>
+                <input type="text" name="branch" value="{{year}}Year" class="username" readonly
+                    style="border-style: outset;">
             </div>
 
             <div class="name">
@@ -510,28 +516,31 @@
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 8px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
                     Branch </label>
                 <input type="text" name="branch" value="{{branch}}" class="username" id="branch"
-                    style="font-size: large; font-family: 'Ysabeau Infant', sans-serif;" readonly>
+                    style="font-size: large; font-family: 'Ysabeau Infant', sans-serif;border-style: outset;" readonly>
             </div>
 
             <div class="name">
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
                     CGPA</label>
-                <input type="number" name="cgpa" value="{{cgpa}}" class="username"
-                    style="font-size: large; font-family: 'Ysabeau Infant', sans-serif;" readonly>
+                <input type="number" name="cgpa" value="{{cgpa}}" class="username" id="scgpa"
+                    style="font-size: large; font-family: 'Ysabeau Infant', sans-serif;border-style: outset;" readonly>
             </div>
         </div>
 
         <div class="applysec">
             <div class="name" style="margin-bottom:-10px ;">
-                <input type="checkbox" name="AFH" class="username" style="width: 75px; height: 25px; margin-top: 6px;">
+                <input type="checkbox" id="check" name="AFH" class="username"
+                    style="width: 75px; height: 25px; margin-top: 6px;" onclick="eligible()">
                 <p class="AFH">Apply for Honors</p>
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem; "
-                    for=""></label>
+                    for="check"></label>
 
             </div>
-
+            <div class="alert alert-danger" role="alert" id="alert" style="display:none">
+                Sorry,You are not Eligible!!!
+            </div>
             <div class="name" style="margin-bottom: -10px ;">
                 <input type="checkbox" name="AFM" class="username"
                     style="width: 75px; height: 25px; margin-top: 6px; border-radius:10px;" onchange="changechoices()"
@@ -627,7 +636,17 @@
             }
         }
     }
-
+    function eligible() {
+        var checkbox = document.getElementById("check");
+        var text = document.getElementById("alert");
+        var v = document.getElementById("scgpa").value;
+        if (checkbox.checked) {
+            if (v < 8.0) {
+                text.style.display = "block";
+                checkbox.checked = false;
+            }
+        }
+    }
     function update2() {
 
         var ch2 = document.getElementById("choice2");
@@ -657,11 +676,17 @@
         var ch1 = document.getElementById('choice1');
         var ch2 = document.getElementById('choice2');
         var ch3 = document.getElementById('choice3');
-
+        var text = document.getElementById("alert");
+        var v = document.getElementById("scgpa").value;
 
         if (checkbox.checked) {
-            box.value = 'selected';
-            handleBranches();
+            if (v < 7.5) {
+                text.style.display = "block";
+                checkbox.checked = false;
+            } else {
+                box.value = 'selected';
+                handleBranches();
+            }
         }
         else {
             box.value = 'not selected';
@@ -692,14 +717,25 @@
         }
         branches.innerHTML = "";
         branches3.innerHTML = "";
-        branchlist.forEach((b) => {
-            if (b != branch1) {
-                var option = document.createElement("option");
-                option.text = b;
-                option.value = b;
-                branches.add(option);
-            }
-        });
+        if (branch1 == "CSE" || branch1 == "IT") {
+            branchlist.forEach((b) => {
+                if (b != branch1 && b != "IT" && b != "CSE") {
+                    var option = document.createElement("option");
+                    option.text = b;
+                    option.value = b;
+                    branches.add(option);
+                }
+            });
+        } else {
+            branchlist.forEach((b) => {
+                if (b != branch1) {
+                    var option = document.createElement("option");
+                    option.text = b;
+                    option.value = b;
+                    branches.add(option);
+                }
+            });
+        }
     }
     function submitting() {
         var form = document.getElementById("form");
