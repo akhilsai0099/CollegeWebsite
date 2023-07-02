@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
+    <title>Login</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        text-align: center;
+    }
+
+    .background-image {
+        position: absolute;
+        background-image: url("https://www.yuvamind.com/colleges/images/college/jntu-gv-college-of-engineering-campus.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        filter: blur(3px);
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .content {
+        align-items: center;
+    }
+
+    .container {
+        margin-top: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        max-height: 80vh;
+
+    }
+
+    .loginform {
+        flex-basis: 30%;
+        background: white;
+        font-family: cursive;
+        padding: 25px;
+        border-style: outset;
+    }
+
+    .loginform h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: black;
+    }
+
+    .tbox {
+        border-radius: 3px;
+        background: transparent;
+        outline: none;
+        border: 1px solid black;
+        width: 100%;
+        height: 35px;
+        margin: 30px 0;
+    }
+
+    .tbox input {
+        background: transparent;
+        width: 90%;
+        outline: none;
+        border: 0;
+        padding-left: 5px;
+        color: black;
+        outline-color: aqua;
+    }
+
+    ::placeholder {
+        color: black;
+        font-size: small;
+    }
+
+    .tbox i {
+        color: black;
+        font-size: 15px;
+        padding: 7px;
+    }
+
+    .btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 6px;
+        background-color: black;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .psw {
+        color: black;
+        text-align: center;
+        font-size: medium;
+        padding: 37px;
+        text-decoration: underline;
+    }
+
+    a {
+        text-decoration: none;
+        color: black;
+    }
+
+    .fa-fa-user {
+        text-align: center;
+    }
+
+    a:hover {
+        color: black;
+    }
+
+    @media only screen and(max-width:800px) and (min-width:300px) {
+        .login {
+            flex-direction: column;
+            margin: 0 15px 1;
+        }
+
+        body {
+            background-color: rgb(220, 237, 234);
+
+        }
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="background-image"> </div>
+        <div class="loginform">
+            <div class="content">
+                <img src="https://dhondi.ai/logos/jntugv.png" alt="JNTU-GV" float="center" width="250" height="250">
+            </div>
+            <h1>Login</h1>
+            <form id="form" method="post" action="{% url 'course_application:loginView' %}">
+                {% csrf_token %}
+                <div class="tbox">
+                    <i class="fa fa-user"></i><input type="text" name="username" placeholder="Username" id="username">
+                </div>
+                <div class="tbox">
+                    <i class="fa fa-lock"></i><input type="password" name="password" placeholder="Password"
+                        id="password">
+                </div>
+                <div class="btn">
+
+
+                    <input class="front" type="submit" value="login">
+                </div>
+            </form>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert">
+                {{message}}
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgb(220 237 234);
+
+        }
+
+        .form {
+            display: flex;
+            margin-left: 10%;
+
+        }
+
+        .name {
+            display: flex;
+            flex-direction: row;
+            margin-left: 10px;
+            margin-top: 10px;
+
+        }
+
+        .logo {
+            width: 150px
+        }
+
+        .head {
+            display: block;
+            margin-bottom: 50px;
+        }
+
+        .jntu {
+            margin-top: 33px;
+            display: block;
+
+        }
+
+        .username {
+            width: 300px;
+            margin-left: 10px;
+            border-radius: 5px;
+            height: 38px;
+            border: none;
+        }
+
+        .container {
+            justify-content: center;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            background-color: cornflowerblue;
+        }
+
+        .image {
+            flex: 1;
+            max-width: 10%;
+        }
+
+        .text {
+            flex: 1;
+            max-width: 90%;
+            font-size: 1vw;
+            padding: 1px;
+        }
+
+        .image img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .username {
+
+            font-size: large;
+            font-family: 'Ysabeau Infant', sans-serif;
+
+        }
+
+        .submit {
+            width: 100px;
+            border-radius: 3px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            margin-top: 47px;
+
+        }
+
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .AFH {
+            font-size: 30px;
+            margin-top: 0px;
+        }
+
+        .AFM {
+            font-size: 30px;
+            margin-top: 0px;
+        }
+
+        .label {
+            margin-left: 100px;
+            font-size: 28px;
+            margin-top: 17px;
+        }
+
+        @media (max-width: 1320px) {
+
+
+
+
+            .text>h1 {
+                margin-top: 31px;
+                text-align: center;
+            }
+        }
+
+        .text>h1 {
+            font-size: 28px;
+        }
+
+        @media (max-width:1111px) {
+            .text>h1 {
+                font-size: 26px;
+                margin-left: 10px;
+                margin-top: 30px;
+            }
+        }
+
+        @media (max-width:980px) {
+            .image {
+                max-width: 14%;
+            }
+
+            .text>h1 {
+                font-size: 26px;
+                margin-left: -12px;
+                margin-top: 30px;
+            }
+        }
+
+        @media (max-width:833px) {
+            .image {
+                max-width: 14%;
+            }
+
+            .text>h1 {
+                font-size: 25px;
+                margin-left: -12px;
+                margin-top: 30px;
+            }
+
+            .submit {
+                margin: 60px 2px 6px 5vw;
+            }
+        }
+
+        @media(max-width:768px) {
+            .container {
+                justify-content: center;
+                flex-direction: column;
+                align-items: center
+            }
+
+            .text>h1 {
+                font-size: 23px;
+                margin-left: -12px;
+                margin-top: 0px;
+            }
+
+            .AFH {
+                font-size: 27px;
+                margin-top: 2px;
+                margin-left: -8px;
+            }
+
+            .AFM {
+                font-size: 27px;
+                margin-top: 2px;
+                margin-left: -8px;
+            }
+
+            .label {
+                font-size: 24px;
+            }
+        }
+
+        @media(max-width:693px) {
+
+            .image {
+                width: 16%;
+            }
+
+            .text>h1 {
+                font-size: 21px;
+                margin-left: -12px;
+                margin-top: 0px;
+            }
+        }
+
+        @media(max-width:624px) {
+
+            .image {
+                width: 100px;
+            }
+
+            .text>h1 {
+                font-size: 18px;
+                margin-left: -12px;
+                margin-top: 0px;
+            }
+        }
+
+        @media(max-width:535px) {
+
+            .image {
+                width: 100px;
+            }
+
+            .text>h1 {
+                font-size: 17px;
+                margin-left: -12px;
+                margin-top: 0px;
+            }
+        }
+
+        @media(max-width:507px) {
+
+            .image {
+                width: 100px;
+            }
+
+            .text>h1 {
+                font-size: 4vw;
+                margin-left: -12px;
+                margin-top: 0px;
+            }
+        }
+
+        @media(max-width:480px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+        }
+
+        @media (min-width:935px) {
+            .apply {
+                display: block;
+                margin-left: 25%;
+                font-size: 3vw;
+            }
+        }
+
+        .applysec {
+            margin-left: 24%;
+        }
+
+
+        @media (min-width:1328px) {
+            .jntu {
+                margin-left: 19%;
+                margin-right: 3%;
+                font-size: 2.5vw;
+            }
+
+            .apply {
+                display: block;
+                margin-left: 25%;
+                font-size: 2.8vw;
+            }
+
+            .applysec {
+                margin-left: 26vw;
+            }
+        }
+
+        @media (max-width:1358px) {
+            .jntu {
+                margin-left: 19%;
+                margin-right: 10vw;
+                font-size: 2.3vw;
+            }
+
+            .apply {
+                display: block;
+                margin-left: 25%;
+                font-size: 2.6vw;
+            }
+
+            .applysec {
+                margin-left: 20vw;
+            }
+        }
+
+        @media (max-width:1220px) {
+            .applysec {
+                margin-left: 16vw;
+            }
+        }
+
+        @media (max-width:1050px) {
+            .applysec {
+                margin-left: 12vw;
+            }
+        }
+
+        @media (max-width:968px) {
+            .jntu {
+                margin-left: 17%;
+                margin-right: 10vw;
+                font-size: 2.4vw;
+            }
+
+            .applysec {
+                margin-left: 8vw;
+            }
+        }
+
+        @media (max-width:900px) {
+            .form {
+                margin-left: 4%;
+
+            }
+
+            .applysec {
+                margin-left: 4vw;
+            }
+        }
+
+        @media (max-width:804px) {
+            .form {
+                margin-left: 18%;
+
+            }
+
+            .applysec {
+                margin-left: -4vw;
+                margin-top: 8vw;
+            }
+
+            .form {
+                display: block;
+            }
+
+            .jntu {
+                margin-left: 2vw;
+            }
+
+            .apply {
+                margin-left: 10vh;
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width:715px) {
+            .apply {
+                margin-left: 4vh;
+                font-size: 28px;
+            }
+
+            .form {
+                margin-left: 5vh;
+            }
+
+        }
+
+        @media (max-width:600px) {
+            .apply {
+                font-size: 26px;
+            }
+        }
+
+        @media (max-width:560px) {
+            .apply {
+                margin-left: 2vh;
+            }
+
+            .form {
+                margin-left: 3vw;
+            }
+
+        }
+
+        @media (max-width:438px) {
+            .form {
+                width: fit-content;
+            }
+
+
+            .form2 {
+                margin-left: -2vw;
+            }
+
+            .apply {
+                display: flex;
+                font-size: 25px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+            .username {
+                width: 282px;
+            }
+
+            .name {
+                margin-left: 1px;
+            }
+        }
+
+        @media (max-width:390px) {
+            .username {
+                width: 258px;
+            }
+        }
+
+        @media (max-width:350px) {
+            .container {
+                width: 116%;
+                margin-left: -10px;
+            }
+        }
+
+        @media (max-width:300px) {
+            .apply {
+                font-size: 24px;
+                margin-right: 0px;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau+Infant&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="head">
+
+        <div class="container">
+            <div class="image">
+                <img src="https://dhondi.ai/logos/jntugv.png" alt="JNTU-GV Logo" float="left" height=130 width=130>
+            </div>
+            <div class="text">
+                <h1>JAWAHARLAL NEHRU TECHNOLOGICAL UNIVERSITY-GURAJADA VIZIANAGARAM</h1>
+            </div>
+        </div>
+        <h2 class="apply">HONORS/MINORS APPLICATION FORM</h2>
+    </div>
+    <form class="form" method="post" action="{% url 'course_application:onsubmit' %}" id="form">
+        {% csrf_token %}
+        <div class="form2">
+            <div class="name">
+                <label
+                    style="height: 25px;  margin-bottom:29px; margin-top: 2px; margin-right: 19px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
+                    Name </label>
+                <input type="text" value="{{name}}" name="name" class="username" readonly>
+            </div>
+
+            <div class="name">
+                <label
+                    style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 8px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
+                    RollNo </label>
+                <input type="text" value="{{rollno}}" name="roll" class="username" readonly>
+            </div>
+
+            <div class="name">
+                <label
+                    style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 32px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
+                    Year </label>
+                <input type="text" name="branch" value="2nd Year" class="username" readonly>
+            </div>
+
+            <div class="name">
+                <label
+                    style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 8px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
+                    Branch </label>
+                <input type="text" name="branch" value="{{branch}}" class="username" id="branch"
+                    style="font-size: large; font-family: 'Ysabeau Infant', sans-serif;" readonly>
+            </div>
+
+            <div class="name">
+                <label
+                    style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
+                    CGPA</label>
+                <input type="number" name="cgpa" value="{{cgpa}}" class="username"
+                    style="font-size: large; font-family: 'Ysabeau Infant', sans-serif;" readonly>
+            </div>
+        </div>
+
+        <div class="applysec">
+            <div class="name" style="margin-bottom:-10px ;">
+                <input type="checkbox" name="AFH" class="username" style="width: 75px; height: 25px; margin-top: 6px;">
+                <p class="AFH">Apply for Honors</p>
+                <label
+                    style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem; "
+                    for=""></label>
+
+            </div>
+
+            <div class="name" style="margin-bottom: -10px ;">
+                <input type="checkbox" name="AFM" class="username"
+                    style="width: 75px; height: 25px; margin-top: 6px; border-radius:10px;" onchange="changechoices()"
+                    id="checkbox">
+                <p class="AFM">Apply for Minors</p>
+                <label
+                    style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem; "
+                    for=""></label>
+
+            </div>
+
+            <div class="label">
+                <label for="choices">Choice 1:</label>
+                <select id="choice1" name="choice1" onclick="update()"
+                    style="height: 29px; border: none; color:white; background-color: #5d5555; border-radius: 3px; width:68px; font-family: 'Ysabeau Infant', sans-serif; font-size: 15px;"
+                    disabled>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="IT">IT</option>
+                    <option value="EEE">EEE</option>
+                    <option value="MECH">MECH</option>
+                    <option value="CIVIL">CIVIL</option>
+                    <option value="MET">MET</option>
+                </select>
+            </div>
+
+            <div class="label">
+                <label for="choices">Choice 2:</label>
+                <select id="choice2" name="choice2" onclick="update2()"
+                    style="height: 29px; border: none; color:white; background-color: #5d5555; border-radius: 3px; width:68px; font-family: 'Ysabeau Infant', sans-serif; font-size: 15px;"
+                    disabled>
+                    <option value="none">None</option>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="IT">IT</option>
+                    <option value="EEE">EEE</option>
+                    <option value="MECH">MECH</option>
+                    <option value="CIVIL">CIVIL</option>
+                    <option value="MET">MET</option>
+                </select>
+            </div>
+
+            <div class="label">
+                <label for="choices">Choice 3:</label>
+                <select id="choice3" name="choice3"
+                    style="height: 29px; border: none; color:white; background-color: #5d5555; font-family: 'Ysabeau Infant', sans-serif; border-radius: 3px; width:68px; font-size: 15px;"
+                    disabled>
+                    <option value="none">None</option>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="IT">IT</option>
+                    <option value="EEE">EEE</option>
+                    <option value="MECH">MECH</option>
+                    <option value="CIVIL">CIVIL</option>
+                    <option value="MET">MET</option>
+                </select>
+            </div>
+
+        </div>
+
+    </form>
+    <div class="button">
+        <button class="submit" onclick="submitting()"> Submit</button>
+
+    </div>
+    {% if alerting %}
+    <div class="alert">
+        {{alerting}}
+    </div>
+    {% endif %}
+</body>
+<script>
+    function update() {
+        var ch1 = document.getElementById("choice1");
+        var ch2 = document.getElementById('choice2');
+        var opn2 = ch2.options[0];
+        choice2.innerHTML = "";
+
+        var selected = ch1.value;
+
+        var option2 = document.createElement('option');
+        option2.value = opn2.value;
+        option2.text = opn2.text;
+        ch2.appendChild(option2);
+
+        for (var i = 0; i < ch1.options.length; i++) {
+
+            if (ch1.options[i].value != selected) {
+                var option = document.createElement('option');
+                option.value = ch1.options[i].value;
+                option.text = ch1.options[i].text;
+                ch2.appendChild(option);
+            }
+        }
+    }
+
+    function update2() {
+
+        var ch2 = document.getElementById("choice2");
+        var ch3 = document.getElementById("choice3");
+
+
+        if (ch2.value != 'none') {
+            ch3.innerHTML = '';
+
+            var selected = ch2.value;
+
+            for (var i = 0; i < ch2.options.length; i++) {
+                if (selected != ch2.options[i].value) {
+                    var option = document.createElement('option');
+                    option.value = ch2.options[i].value;
+                    option.text = ch2.options[i].text;
+                    ch3.appendChild(option);
+                }
+            }
+        }
+        else {
+            ch3.value = 'none';
+        }
+    }
+    function changechoices() {
+        var box = document.getElementById("checkbox");
+        var ch1 = document.getElementById('choice1');
+        var ch2 = document.getElementById('choice2');
+        var ch3 = document.getElementById('choice3');
+
+
+        if (checkbox.checked) {
+            box.value = 'selected';
+            handleBranches();
+        }
+        else {
+            box.value = 'not selected';
+            console.log('checked');
+        }
+        if (box.value == "selected") {
+            ch1.disabled = false;
+            ch2.disabled = false;
+            ch3.disabled = false;
+        }
+        else {
+            ch1.disabled = true;
+            ch2.disabled = true;
+            ch3.disabled = true;
+        }
+    }
+
+    function handleBranches() {
+        console.log("function here called");
+        let branch1 = document.getElementById("branch").value;
+        let branches = document.getElementById("choice1");
+        let branches3 = document.getElementById("choice3");
+        var branchlist = [];
+
+        for (let i = 0; i < branches.options.length; i++) {
+            console.log("element added");
+            branchlist.push(branches.options[i].value);
+        }
+        branches.innerHTML = "";
+        branches3.innerHTML = "";
+        branchlist.forEach((b) => {
+            if (b != branch1) {
+                var option = document.createElement("option");
+                option.text = b;
+                option.value = b;
+                branches.add(option);
+            }
+        });
+    }
+    function submitting() {
+        var form = document.getElementById("form");
+        form.submit();
+    }
+</script>
+
+</html>
