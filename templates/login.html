@@ -7,8 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <title>Login</title>
+    <script>
+        function myfunction() {
+            var passwordInput = document.getElementById("password");
+            var showPasswordCheckbox = document.getElementById("showpassword");
+            passwordInput.type = showPasswordCheckbox.checked ? "text" : "password";
+        }
+    </script>
 </head>
 <style>
     * {
@@ -39,25 +46,23 @@
     }
 
     .container {
-
         display: flex;
         justify-content: center;
-        align-items: center;
         height: 100vh;
     }
 
     .form-container {
-        position: sticky;
-        width: 50vw;
+        width: 70%;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
     .loginform {
-        flex-basis: 55%;
+        flex-basis: 50%;
         background: white;
         font-family: cursive;
+        border-radius: 5px;
         padding: 25px;
         border-style: outset;
     }
@@ -84,8 +89,8 @@
         width: 90%;
         outline: none;
         border: 0;
+        padding-left: 5px;
         color: black;
-        outline-color: aqua;
     }
 
     ::placeholder {
@@ -121,41 +126,16 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .psw {
-        color: black;
-        text-align: center;
-        font-size: medium;
-        padding: 37px;
-        text-decoration: underline;
-    }
-
-    a {
-        text-decoration: none;
-        color: black;
-    }
-
-    .fa-fa-user {
-        text-align: center;
-    }
-
-    a:hover {
-        color: black;
-    }
-
     @media only screen and(max-width:800px) and (min-width:300px) {
         .login {
             flex-direction: column;
             margin: 0 15px 1;
         }
-
-        body {
-            background-color: rgb(220, 237, 234);
-
-        }
     }
 </style>
 
 <body>
+
     <div class="container">
 
         <div class="background-image"> </div>
@@ -165,41 +145,32 @@
                     <img src="https://dhondi.ai/logos/jntugv.png" alt="JNTU-GV" float="center" width="250" height="250">
                 </div>
                 <h1>Login</h1>
-                <form id="form" method="post" action="{% url 'course_application:loginView' %}">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                <form method="post" action="{% url 'course_application:loginView' %}">
                     {% csrf_token %}
                     <div class="tbox">
-                        <i class="fa fa-user"></i><input type="text" name="username" placeholder="Username"
-                            id="username">
+                        <i class="fa fa-user"></i><input type="text" name="username" id="username"
+                            placeholder="Username" required>
                     </div>
                     <div class="tbox">
-                        <i class="fa fa-lock"></i><input type="password" name="password" placeholder="Password"
-                            id="password">
+                        <i class="fa fa-lock"></i><input type="password" id="password" name="password"
+                            placeholder="Password" required>
                     </div>
                     <div>
                         <input type="checkbox" id="showpassword" onchange="myfunction()">
                         <label for="showpassword">Show Password</label>
                     </div>
 
-                    <button class="btn" type="submit">Login</button>
+                    <button class="btn">Login</button>
                 </form>
-
-                {% if messages %}
-                {% for message in messages %}
-                <div class="alert">
-                    {{message}}
-                </div>
-                {% endfor %}
-                {% endif %}
             </div>
         </div>
     </div>
-    <script>
-        function myfunction() {
-            var passwordInput = document.getElementById("password");
-            var showPasswordCheckbox = document.getElementById("showpassword");
-            passwordInput.type = showPasswordCheckbox.checked ? "text" : "password";
-        }
-    </script>
-</body>
 
 </html>
