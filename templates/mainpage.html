@@ -51,6 +51,7 @@
             width: 300px;
             margin-left: 10px;
             border-radius: 5px;
+            padding-left: 5px;
             height: 38px;
             border: none;
         }
@@ -285,7 +286,14 @@
         }
 
         .applysec {
-            margin-left: 24%;
+            position: relative;
+
+        }
+
+        #alert {
+            position: absolute;
+            top: 0;
+            left: -190px;
         }
 
 
@@ -331,9 +339,10 @@
             }
         }
 
-        @media (max-width:1050px) {
-            .applysec {
-                margin-left: 12vw;
+        @media (max-width:1100px) {
+            #alert {
+                left: 50px;
+                top: -50px;
             }
         }
 
@@ -485,7 +494,7 @@
         </div>
         <h2 class="apply">HONORS/MINORS APPLICATION FORM</h2>
     </div>
-    <form class="form" method="post" action="{% url 'course_application:onsubmit' %}" id="form">
+    <form class="form" method="POST" action="{% url 'course_application:onsubmit' %}" id="form">
         {% csrf_token %}
         <div class="form2">
             <div class="name">
@@ -507,7 +516,7 @@
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 32px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem;">
                     Year </label>
-                <input type="text" name="branch" value="{{year}}Year" class="username" readonly
+                <input type="text" name="branch" value="{{year}} Year" class="username" readonly
                     style="border-style: outset;">
             </div>
 
@@ -614,22 +623,22 @@
 </body>
 <script>
     function update() {
-        var ch1 = document.getElementById("choice1");
-        var ch2 = document.getElementById('choice2');
-        var opn2 = ch2.options[0];
+        let ch1 = document.getElementById("choice1");
+        let ch2 = document.getElementById('choice2');
+        let opn2 = ch2.options[0];
         choice2.innerHTML = "";
 
-        var selected = ch1.value;
+        let selected = ch1.value;
 
-        var option2 = document.createElement('option');
+        let option2 = document.createElement('option');
         option2.value = opn2.value;
         option2.text = opn2.text;
         ch2.appendChild(option2);
 
-        for (var i = 0; i < ch1.options.length; i++) {
+        for (let i = 0; i < ch1.options.length; i++) {
 
             if (ch1.options[i].value != selected) {
-                var option = document.createElement('option');
+                let option = document.createElement('option');
                 option.value = ch1.options[i].value;
                 option.text = ch1.options[i].text;
                 ch2.appendChild(option);
@@ -637,30 +646,34 @@
         }
     }
     function eligible() {
-        var checkbox = document.getElementById("check");
-        var text = document.getElementById("alert");
-        var v = document.getElementById("scgpa").value;
+        let checkbox = document.getElementById("check");
+        let text = document.getElementById("alert");
+        let v = document.getElementById("scgpa").value;
         if (checkbox.checked) {
             if (v < 8.0) {
+
                 text.style.display = "block";
+                setTimeout(() => {
+                    text.style.display = "none";
+                }, 2000)
                 checkbox.checked = false;
             }
         }
     }
     function update2() {
 
-        var ch2 = document.getElementById("choice2");
-        var ch3 = document.getElementById("choice3");
+        let ch2 = document.getElementById("choice2");
+        let ch3 = document.getElementById("choice3");
 
 
         if (ch2.value != 'none') {
             ch3.innerHTML = '';
 
-            var selected = ch2.value;
+            let selected = ch2.value;
 
-            for (var i = 0; i < ch2.options.length; i++) {
+            for (let i = 0; i < ch2.options.length; i++) {
                 if (selected != ch2.options[i].value) {
-                    var option = document.createElement('option');
+                    let option = document.createElement('option');
                     option.value = ch2.options[i].value;
                     option.text = ch2.options[i].text;
                     ch3.appendChild(option);
@@ -672,12 +685,12 @@
         }
     }
     function changechoices() {
-        var box = document.getElementById("checkbox");
-        var ch1 = document.getElementById('choice1');
-        var ch2 = document.getElementById('choice2');
-        var ch3 = document.getElementById('choice3');
-        var text = document.getElementById("alert");
-        var v = document.getElementById("scgpa").value;
+        let box = document.getElementById("checkbox");
+        let ch1 = document.getElementById('choice1');
+        let ch2 = document.getElementById('choice2');
+        let ch3 = document.getElementById('choice3');
+        let text = document.getElementById("alert");
+        let v = document.getElementById("scgpa").value;
 
         if (checkbox.checked) {
             if (v < 7.5) {
@@ -709,7 +722,7 @@
         let branch1 = document.getElementById("branch").value;
         let branches = document.getElementById("choice1");
         let branches3 = document.getElementById("choice3");
-        var branchlist = [];
+        let branchlist = [];
 
         for (let i = 0; i < branches.options.length; i++) {
             console.log("element added");
@@ -720,7 +733,7 @@
         if (branch1 == "CSE" || branch1 == "IT") {
             branchlist.forEach((b) => {
                 if (b != branch1 && b != "IT" && b != "CSE") {
-                    var option = document.createElement("option");
+                    let option = document.createElement("option");
                     option.text = b;
                     option.value = b;
                     branches.add(option);
@@ -729,7 +742,7 @@
         } else {
             branchlist.forEach((b) => {
                 if (b != branch1) {
-                    var option = document.createElement("option");
+                    let option = document.createElement("option");
                     option.text = b;
                     option.value = b;
                     branches.add(option);
@@ -738,7 +751,7 @@
         }
     }
     function submitting() {
-        var form = document.getElementById("form");
+        let form = document.getElementById("form");
         form.submit();
     }
 </script>

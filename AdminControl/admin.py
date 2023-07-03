@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from .models import UserData
+from .models import UserData, HonorsModel, MinorsModel
 from django import forms
 from django.urls import path, reverse
 from django.shortcuts import render
@@ -13,10 +13,13 @@ import csv
 class CsvImportForm(forms.Form):
     csv_upload = forms.FileField()
     csv_upload.label = "Upload a CSV file"
+    batchCode = forms.CharField()
+    batchCode.label = "Enter the batchCode "
 
 
 class UserDataControl(admin.ModelAdmin):
-    list_display = ("rollno", "name", "branch", "scgpa")
+    list_display = ("batchCode", "rollno", "name", "branch", "scgpa")
+    ordering = ['-batchCode', 'rollno']
 
     def get_urls(self):
         urls = super().get_urls()
@@ -26,6 +29,8 @@ class UserDataControl(admin.ModelAdmin):
     def upload_csv(self, request):
         if request.method == 'POST':
             csv_file = request.FILES.get('csv_upload')
+            batchCode = request.POST['batchCode']
+            # print(batchCode)
 
             if not csv_file:
                 messages.warning(request, "Please upload a CSV file")
@@ -58,7 +63,8 @@ class UserDataControl(admin.ModelAdmin):
                             'phone': phone,
                             'scgpa': scgpa,
                             'total_credits': total_credits,
-                            'total_grade': total_grade
+                            'total_grade': total_grade,
+                            'batchCode': batchCode
                         }
                     )
 
@@ -86,4 +92,17 @@ class UserDataControl(admin.ModelAdmin):
         return render(request, 'admin/upload-csv.html', body)
 
 
+class HonorsModelControl(admin.ModelAdmin):
+    list_display = ['rollno', 'dept', 'scgpa', 'selectedDept']
+    ordering = ['dept', '-scgpa']
+
+
+class MinorsModelControl(admin.ModelAdmin):
+    list_display = ['rollno', 'courseChoice1',
+                    'courseChoice2', 'scgpa', 'selectedDept']
+    ordering = ['rollno']
+
+
 admin.site.register(UserData, UserDataControl)
+admin.site.register(HonorsModel, HonorsModelControl)
+admin.site.register(MinorsModel, MinorsModelControl)
