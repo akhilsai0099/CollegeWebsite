@@ -1,0 +1,13 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+{% block content %}
+
+
+<a href="filterHonors/"><button class="button">Filter Honors Students</button></a>
+<a href="uploadHonors/"><button class="button">upload data</button></a>
+<form action="." method="POST">
+    {% csrf_token %}
+    <a href="downloadHonorsData/"><button class="button" type="submit">Download CSV</button></a>
+</form>
+{{ block.super }}
+{% endblock %}
