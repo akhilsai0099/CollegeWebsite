@@ -566,6 +566,7 @@
                 <select id="choice1" name="choice1" onclick="update()"
                     style="height: 29px; border: none; color:white; background-color: #5d5555; border-radius: 3px; width:68px; font-family: 'Ysabeau Infant', sans-serif; font-size: 15px;"
                     disabled>
+                    <option value="none">None</option>
                     <option value="CSE">CSE</option>
                     <option value="ECE">ECE</option>
                     <option value="IT">IT</option>
@@ -578,7 +579,7 @@
 
             <div class="label">
                 <label for="choices">Choice 2:</label>
-                <select id="choice2" name="choice2" onclick="update2()"
+                <select id="choice2" name="choice2"
                     style="height: 29px; border: none; color:white; background-color: #5d5555; border-radius: 3px; width:68px; font-family: 'Ysabeau Infant', sans-serif; font-size: 15px;"
                     disabled>
                     <option value="none">None</option>
@@ -591,23 +592,6 @@
                     <option value="MET">MET</option>
                 </select>
             </div>
-
-            <div class="label">
-                <label for="choices">Choice 3:</label>
-                <select id="choice3" name="choice3"
-                    style="height: 29px; border: none; color:white; background-color: #5d5555; font-family: 'Ysabeau Infant', sans-serif; border-radius: 3px; width:68px; font-size: 15px;"
-                    disabled>
-                    <option value="none">None</option>
-                    <option value="CSE">CSE</option>
-                    <option value="ECE">ECE</option>
-                    <option value="IT">IT</option>
-                    <option value="EEE">EEE</option>
-                    <option value="MECH">MECH</option>
-                    <option value="CIVIL">CIVIL</option>
-                    <option value="MET">MET</option>
-                </select>
-            </div>
-
         </div>
         
     </form>
@@ -623,29 +607,7 @@
     {% endif %}
 </body>
 <script>
-    function update() {
-        let ch1 = document.getElementById("choice1");
-        let ch2 = document.getElementById('choice2');
-        let opn2 = ch2.options[0];
-        choice2.innerHTML = "";
-
-        let selected = ch1.value;
-
-        let option2 = document.createElement('option');
-        option2.value = opn2.value;
-        option2.text = opn2.text;
-        ch2.appendChild(option2);
-
-        for (let i = 0; i < ch1.options.length; i++) {
-
-            if (ch1.options[i].value != selected) {
-                let option = document.createElement('option');
-                option.value = ch1.options[i].value;
-                option.text = ch1.options[i].text;
-                ch2.appendChild(option);
-            }
-        }
-    }
+    
     function eligible() {
         let checkbox = document.getElementById("check");
         let text = document.getElementById("alert");
@@ -661,34 +623,33 @@
             }
         }
     }
-    function update2() {
+    function update() {
 
+        let ch1 = document.getElementById("choice1");
         let ch2 = document.getElementById("choice2");
-        let ch3 = document.getElementById("choice3");
 
 
-        if (ch2.value != 'none') {
-            ch3.innerHTML = '';
+        if (ch1.value != 'none') {
+            ch2.innerHTML = '';
 
-            let selected = ch2.value;
+            let selected = ch1.value;
 
-            for (let i = 0; i < ch2.options.length; i++) {
-                if (selected != ch2.options[i].value) {
+            for (let i = 0; i < ch1.options.length; i++) {
+                if (selected != ch1.options[i].value) {
                     let option = document.createElement('option');
-                    option.value = ch2.options[i].value;
-                    option.text = ch2.options[i].text;
-                    ch3.appendChild(option);
+                    option.value = ch1.options[i].value;
+                    option.text = ch1.options[i].text;
+                    ch2.appendChild(option);
                 }
             }
         }else {
-            ch3.value = 'none';
+            ch2.value = 'none';
         }
     }
     function changechoices() {
         let box = document.getElementById("checkbox");
         let ch1 = document.getElementById('choice1');
         let ch2 = document.getElementById('choice2');
-        let ch3 = document.getElementById('choice3');
         let text = document.getElementById("alert");
         let v = document.getElementById("scgpa").value;
 
@@ -707,11 +668,9 @@
         if (box.value == "selected") {
             ch1.disabled = false;
             ch2.disabled = false;
-            ch3.disabled = false;
         }else {
             ch1.disabled = true;
             ch2.disabled = true;
-            ch3.disabled = true;
         }
     }
 
@@ -719,7 +678,7 @@
         console.log("function here called");
         let branch1 = document.getElementById("branch").value;
         let branches = document.getElementById("choice1");
-        let branches3 = document.getElementById("choice3");
+        let branches2 = document.getElementById("choice2");
         let branchlist = [];
 
         for (let i = 0; i < branches.options.length; i++) {
@@ -727,7 +686,7 @@
             branchlist.push(branches.options[i].value);
         }
         branches.innerHTML = "";
-        branches3.innerHTML = "";
+        branches2.innerHTML =""
         if (branch1 == "CSE" || branch1 == "IT") {
             branchlist.forEach((b) => {
                 if (b != branch1 && b != "IT" && b != "CSE") {
@@ -751,11 +710,22 @@
     function submitting() {
         var check=document.getElementById("check");
         var check2=document.getElementById("checkbox");
+        let select1=document.getElementById("choice1").value;
         if(check.checked || check2.checked){
-        let form = document.getElementById("form");
-        form.submit();
+            if(check2.checked){
+                if(select1 != "none"){
+                    let form = document.getElementById("form");
+                    form.submit();
+                }else{
+                    return document.getElementById("error").innerHTML="Please select any one of the option to submit the application";
+
+                }
+            }
+            let form = document.getElementById("form");
+                    form.submit();
+
         }else{
-            return document.getElementById("error").innerHTML="please mark any one of the checkbox to submit the application";
+            return document.getElementById("error").innerHTML="Please mark any one of the checkbox to submit the application";
             
         }
     }
