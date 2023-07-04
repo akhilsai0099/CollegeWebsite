@@ -540,7 +540,7 @@
         <div class="applysec">
             <div class="name" style="margin-bottom:-10px ;">
                 <input type="checkbox" id="check" name="AFH" class="username"
-                    style="width: 75px; height: 25px; margin-top: 6px;" onclick="eligible()">
+                    style="width: 75px; height: 25px; margin-top: 6px;" onclick="eligible()" required>
                 <p class="AFH">Apply for Honors</p>
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem; "
@@ -553,7 +553,7 @@
             <div class="name" style="margin-bottom: -10px ;">
                 <input type="checkbox" name="AFM" class="username"
                     style="width: 75px; height: 25px; margin-top: 6px; border-radius:10px;" onchange="changechoices()"
-                    id="checkbox">
+                    id="checkbox"required>
                 <p class="AFM">Apply for Minors</p>
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem; "
@@ -609,8 +609,9 @@
             </div>
 
         </div>
-
+        
     </form>
+    <h6 style="color:red; text-align: center;" id="error"></h6>
     <div class="button">
         <button class="submit" onclick="submitting()"> Submit</button>
 
@@ -679,8 +680,7 @@
                     ch3.appendChild(option);
                 }
             }
-        }
-        else {
+        }else {
             ch3.value = 'none';
         }
     }
@@ -700,8 +700,7 @@
                 box.value = 'selected';
                 handleBranches();
             }
-        }
-        else {
+        }else {
             box.value = 'not selected';
             console.log('checked');
         }
@@ -709,8 +708,7 @@
             ch1.disabled = false;
             ch2.disabled = false;
             ch3.disabled = false;
-        }
-        else {
+        }else {
             ch1.disabled = true;
             ch2.disabled = true;
             ch3.disabled = true;
@@ -751,8 +749,15 @@
         }
     }
     function submitting() {
+        var check=document.getElementById("check");
+        var check2=document.getElementById("checkbox");
+        if(check.checked || check2.checked){
         let form = document.getElementById("form");
         form.submit();
+        }else{
+            return document.getElementById("error").innerHTML="please mark any one of the checkbox to submit the application";
+            
+        }
     }
 </script>
 
