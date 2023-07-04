@@ -11,8 +11,15 @@
 <body>
     {% if user.is_authenticated %}
     <h1>Welcome, {{ user.first_name }}</h1>
+    {% if message %}
+    <a href="/compare">Modify Honors/Minors Application</a>
+    {% else %}
     <a href="/compare">Apply for Honors/Minors</a>
+    {%endif%}
     <a href="/logout">logout</a>
+    {% if message != None %}
+    <h1>{{ message }}</h1>
+    {%endif%}
     {% else %}
     <li class="nav-item">
         <a class="nav-link" href="/accounts/register">Register</a>
