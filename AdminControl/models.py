@@ -19,6 +19,15 @@ class UserData(models.Model):
     def __str__(self):
         return self.name
 
+    def update_honors_dept(self, new_dept):
+        self.honorsDept = new_dept
+        self.save()
+
+    def update_minors_dept(self, new_dept):
+        self.minorsDept = new_dept
+        self.save()
+
+
     class Meta:  # new
         verbose_name_plural = "Semester Data"
 
@@ -27,7 +36,7 @@ class HonorsModel(models.Model):
     rollno = models.CharField(primary_key=True, max_length=10)
     dept = models.CharField(max_length=5)
     scgpa = models.DecimalField(max_digits=3, decimal_places=2)
-    selectedDept = models.CharField(max_length=5)
+    selectedDept = models.CharField(max_length=5, default=None, null=True)
 
     def __str__(self):
         return self.rollno
@@ -38,8 +47,8 @@ class HonorsModel(models.Model):
 
 class MinorsModel(models.Model):
     rollno = models.CharField(primary_key=True, max_length=10)
-    courseChoice1 = models.CharField(max_length=5)
-    courseChoice2 = models.CharField(max_length=5)
+    courseChoice1 = models.CharField(max_length=5, default=None, null=True)
+    courseChoice2 = models.CharField(max_length=5, default=None, null=True)
     scgpa = models.DecimalField(max_digits=3, decimal_places=2)
     selectedDept = models.CharField(max_length=5)
 
