@@ -18,7 +18,7 @@
     {% else %}
     <a href="/compare">Apply for Honors/Minors</a>
     {%endif%}
-    <a href="/logout">logout</a>
+    <a href="/auth/logout">logout</a>
     {% if message != None %}
     <h1>{{ message }}</h1>
     {%endif%}
@@ -26,7 +26,7 @@
     <li class="nav-item">
         <a class="nav-link" href="/accounts/register">Register</a>
     <li class="nav-item">
-        <a class="nav-link" href="/login">Login</a>
+        <a class="nav-link" href="/auth/login">Login</a>
 
         {% endif %}
 

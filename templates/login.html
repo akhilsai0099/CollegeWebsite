@@ -154,7 +154,7 @@
                 {% endif %}
                 {% endfor %}
                 {% endif %}
-                <form method="post" action="{% url 'course_application:loginView' %}">
+                <form method="post" action="{% url 'authentication:login' %}">
                     {% csrf_token %}
                     <div class="tbox">
                         <i class="fa fa-user"></i><input type="text" name="username" id="username"
