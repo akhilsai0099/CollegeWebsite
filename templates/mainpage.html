@@ -553,7 +553,7 @@
             <div class="name" style="margin-bottom: -10px ;">
                 <input type="checkbox" name="AFM" class="username"
                     style="width: 75px; height: 25px; margin-top: 6px; border-radius:10px;" onchange="changechoices()"
-                    id="checkbox"required>
+                    id="checkbox" required>
                 <p class="AFM">Apply for Minors</p>
                 <label
                     style="height: 25px; margin-bottom:29px; margin-top: 2px; margin-right: 17px; font-family: 'Ysabeau Infant', sans-serif; font-size: 1.3rem; "
@@ -563,10 +563,10 @@
 
             <div class="label">
                 <label for="choices">Choice 1:</label>
-                <select id="choice1" name="choice1" onclick="update()"
+                <select id="choice1" name="choice1"
                     style="height: 29px; border: none; color:white; background-color: #5d5555; border-radius: 3px; width:68px; font-family: 'Ysabeau Infant', sans-serif; font-size: 15px;"
                     disabled>
-                    <option value="none">None</option>
+                    <option value="None">None</option>
                     <option value="CSE">CSE</option>
                     <option value="ECE">ECE</option>
                     <option value="IT">IT</option>
@@ -582,7 +582,7 @@
                 <select id="choice2" name="choice2"
                     style="height: 29px; border: none; color:white; background-color: #5d5555; border-radius: 3px; width:68px; font-family: 'Ysabeau Infant', sans-serif; font-size: 15px;"
                     disabled>
-                    <option value="none">None</option>
+                    <option value="None">None</option>
                     <option value="CSE">CSE</option>
                     <option value="ECE">ECE</option>
                     <option value="IT">IT</option>
@@ -593,7 +593,7 @@
                 </select>
             </div>
         </div>
-        
+
     </form>
     <h6 style="color:red; text-align: center;" id="error"></h6>
     <div class="button">
@@ -607,7 +607,10 @@
     {% endif %}
 </body>
 <script>
-    
+    let choice1Dropdown = document.getElementById("choice1")
+    choice1Dropdown.addEventListener("input", update);
+
+
     function eligible() {
         let checkbox = document.getElementById("check");
         let text = document.getElementById("alert");
@@ -629,7 +632,7 @@
         let ch2 = document.getElementById("choice2");
 
 
-        if (ch1.value != 'none') {
+        if (ch1.value != 'None') {
             ch2.innerHTML = '';
 
             let selected = ch1.value;
@@ -642,8 +645,8 @@
                     ch2.appendChild(option);
                 }
             }
-        }else {
-            ch2.value = 'none';
+        } else {
+            ch2.value = 'None';
         }
     }
     function changechoices() {
@@ -661,14 +664,14 @@
                 box.value = 'selected';
                 handleBranches();
             }
-        }else {
+        } else {
             box.value = 'not selected';
             console.log('checked');
         }
         if (box.value == "selected") {
             ch1.disabled = false;
             ch2.disabled = false;
-        }else {
+        } else {
             ch1.disabled = true;
             ch2.disabled = true;
         }
@@ -686,7 +689,7 @@
             branchlist.push(branches.options[i].value);
         }
         branches.innerHTML = "";
-        branches2.innerHTML =""
+        branches2.innerHTML = ""
         if (branch1 == "CSE" || branch1 == "IT") {
             branchlist.forEach((b) => {
                 if (b != branch1 && b != "IT" && b != "CSE") {
@@ -708,25 +711,25 @@
         }
     }
     function submitting() {
-        var check=document.getElementById("check");
-        var check2=document.getElementById("checkbox");
-        let select1=document.getElementById("choice1").value;
-        if(check.checked || check2.checked){
-            if(check2.checked){
-                if(select1 != "none"){
+        var check = document.getElementById("check");
+        var check2 = document.getElementById("checkbox");
+        let select1 = document.getElementById("choice1").value;
+        if (check.checked || check2.checked) {
+            if (check2.checked) {
+                if (select1 != "None") {
                     let form = document.getElementById("form");
                     form.submit();
-                }else{
-                    return document.getElementById("error").innerHTML="Please select any one of the option to submit the application";
+                } else {
+                    return document.getElementById("error").innerHTML = "Please select any one of the option to submit the application";
 
                 }
             }
             let form = document.getElementById("form");
-                    form.submit();
+            form.submit();
 
-        }else{
-            return document.getElementById("error").innerHTML="Please mark any one of the checkbox to submit the application";
-            
+        } else {
+            return document.getElementById("error").innerHTML = "Please mark any one of the checkbox to submit the application";
+
         }
     }
 </script>
