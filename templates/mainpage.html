@@ -494,7 +494,7 @@
         </div>
         <h2 class="apply">HONORS/MINORS APPLICATION FORM</h2>
     </div>
-    <form class="form" method="POST" action="{% url 'course_application:onsubmit' %}" id="form">
+    <form class="form" method="POST" action="{% url 'course_application:honorsMinorsFormSubmit' %}" id="form">
         {% csrf_token %}
         <div class="form2">
             <div class="name">

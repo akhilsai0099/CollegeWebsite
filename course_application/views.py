@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 @login_required
-def compare(request):
+def honorsMinorsApplication(request):
     user = request.user
     if user:
         try:
@@ -38,7 +38,7 @@ def compare(request):
 
 
 @login_required
-def onsubmit(request):
+def honorsMinorsFormSubmit(request):
     if request.method == "POST":
         cgpa = float(request.POST.get("cgpa", "0.00"))
         appliedForHonors = request.POST.get("AFH")

@@ -14,9 +14,9 @@
     {% if user.is_authenticated %}
     <h1>Welcome, {{ user.first_name }}</h1>
     {% if message %}
-    <a href="/compare">Modify Honors/Minors Application</a>
+    <a href="/honorsMinorsApplication">Modify Honors/Minors Application</a>
     {% else %}
-    <a href="/compare">Apply for Honors/Minors</a>
+    <a href="/honorsMinorsApplication">Apply for Honors/Minors</a>
     {%endif%}
     <a href="/auth/logout">logout</a>
     {% if message != None %}
