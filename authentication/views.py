@@ -28,8 +28,8 @@ def login(request):
             if user is not None:
                 auth.login(request, user=user)
                 next_url = request.session.get("next_url")
-                del request.session["next_url"]
                 if next_url:
+                    del request.session["next_url"]
                     return redirect(next_url)
 
                 return HttpResponseRedirect("/")

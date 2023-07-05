@@ -181,7 +181,7 @@ class MinorsModelControl(admin.ModelAdmin):
         try:
             top_records_rollno = []
             for dept in unique_depts:
-                filter_condition = {courseChoice: dept, "selectedDept": ""}
+                filter_condition = {courseChoice: dept, "selectedDept": None}
                 if available[dept] > 0:
                     top_records = MinorsModel.objects.filter(
                         **filter_condition
@@ -229,7 +229,7 @@ class MinorsModelControl(admin.ModelAdmin):
             }
             self.filter(available, choice1_depts, "courseChoice1")
             self.filter(available, choice2_depts, "courseChoice2")
-            MinorsModel.objects.filter(selectedDept="").delete()
+            MinorsModel.objects.filter(selectedDept=None).delete()
             return redirect("../")
 
         return render(request, "admin/filterMinors.html")
@@ -239,7 +239,7 @@ class MinorsModelControl(admin.ModelAdmin):
             unique_depts = MinorsModel.objects.values_list(
                 "selectedDept", flat=True
             ).distinct()
-            unique_depts = [dept for dept in unique_depts if dept != ""]
+            unique_depts = [dept for dept in unique_depts if dept != None]
             file_path = f"minors.csv"
             with open(file_path, "w", newline="") as csvfile:
                 writer = csv.writer(csvfile)
