@@ -1,0 +1,12 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div>
+    <form action="." method="POST" enctype="multipart/form-data">
+        {% csrf_token%}
+        <button type="submit" class="button">Filter</button>
+    </form>
+    <br>
+    <a href="/admin/AdminControl/minorsmodel/" class="button">Back</a>
+</div>
+{% endblock %}

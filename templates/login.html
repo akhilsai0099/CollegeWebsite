@@ -147,9 +147,11 @@
                 <h1>Login</h1>
                 {% if messages %}
                 {% for message in messages %}
+                {% if forloop.last %}
                 <div class="alert alert-danger" role="alert">
-                    {{ message }}
+                    {{ message.tags }}
                 </div>
+                {% endif %}
                 {% endfor %}
                 {% endif %}
                 <form method="post" action="{% url 'course_application:loginView' %}">

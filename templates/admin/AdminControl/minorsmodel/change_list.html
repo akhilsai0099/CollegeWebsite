@@ -3,8 +3,8 @@
 {% block content %}
 
 
-<a href="filterHonors/"><button class="button">Filter Honors Students</button></a>
-<a href="uploadHonors/"><button class="button">upload data</button></a>
+<a href="filterMinors/"><button class="button">Filter Minors Students</button></a>
+<a href="uploadMinors/"><button class="button">Upload data</button></a>
 <button class="button" onclick="buttonClicked()">Download CSV</button>
 
 
@@ -31,7 +31,7 @@
         var xhr = new XMLHttpRequest();
 
         // Configure the request
-        xhr.open('POST', '/admin/AdminControl/honorsmodel/downloadHonorsData/', true);
+        xhr.open('POST', '/admin/AdminControl/minorsmodel/downloadMinorsData/', true);
         xhr.responseType = 'blob';  // Set the response type to 'blob'
 
         // Retrieve the CSRF token from the cookie
@@ -46,7 +46,7 @@
                 // Create a download link element
                 var downloadLink = document.createElement('a');
                 downloadLink.href = URL.createObjectURL(xhr.response);
-                downloadLink.download = 'honorsData.csv';  // Specify the desired filename
+                downloadLink.download = 'minorsData.csv';  // Specify the desired filename
 
                 // Append the download link to the document body
                 document.body.appendChild(downloadLink);

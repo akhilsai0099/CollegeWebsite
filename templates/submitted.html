@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Application Submission{% endblock %}
+
+{% block body %}
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert alert-danger" role="alert">
+    {{ message }}
+</div>
+{% elif message.tags == 'success' %}
+<div class="alert alert-success" role="alert">
+    {{ message }}
+</div>
+<a href="/">Go to Home</a>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endblock %}
