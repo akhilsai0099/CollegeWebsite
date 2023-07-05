@@ -27,7 +27,6 @@ class UserData(models.Model):
         self.minorsDept = new_dept
         self.save()
 
-
     class Meta:  # new
         verbose_name_plural = "Semester Data"
 
@@ -50,7 +49,7 @@ class MinorsModel(models.Model):
     courseChoice1 = models.CharField(max_length=5, default=None, null=True)
     courseChoice2 = models.CharField(max_length=5, default=None, null=True)
     scgpa = models.DecimalField(max_digits=3, decimal_places=2)
-    selectedDept = models.CharField(max_length=5)
+    selectedDept = models.CharField(max_length=5, default=None, null=True)
 
     def __str__(self):
         return self.rollno
