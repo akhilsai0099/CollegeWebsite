@@ -5,6 +5,7 @@ from AdminControl.models import UserData
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from AdminControl.models import UserData, HonorsModel, MinorsModel
+from datetime import datetime
 
 
 def logout(request):
@@ -27,10 +28,10 @@ def loginView(request):
                 return HttpResponseRedirect("/")
             else:
                 messages.error(request, "Invalid username or password")
-                return HttpResponseRedirect(request.path_info)
+                return redirect(request.path_info)
 
     # Render the login form
-    return render(request, "login.html")
+    return render(request, "login.html", {"messages": messages.get_messages(request)})
 
 
 @login_required
@@ -43,7 +44,7 @@ def compare(request):
             studentbranch = student.branch
             studentcgpa = student.scgpa
             studentroll = student.rollno
-            studentYear = 23 - int(student.batchCode)
+            studentYear = int(datetime.today().strftime("%y")) - int(student.batchCode)
             return render(
                 request,
                 "mainpage.html",
@@ -58,6 +59,11 @@ def compare(request):
         except Exception as e:
             print(e)
 
+        return render(
+            request,
+            "mainpage.html",
+        )
+
 
 @login_required
 def onsubmit(request):
@@ -68,18 +74,42 @@ def onsubmit(request):
 
         student = request.user
         studentdata = UserData.objects.get(rollno=student.username)
-
+        honors = None
+        minors = None
         if appliedForHonors and appliedForMinors:
-            applyHonors(request, studentdata, cgpa)
-            applyMinors(request, studentdata, cgpa)
+            honors = applyHonors(request, studentdata, cgpa)
+            minors = applyMinors(request, studentdata, cgpa)
+            if honors == "Unable to submit" or minors == "Unable to submit":
+                messages.error(
+                    request,
+                    f"{honors} for Honors Application, {minors} for Minors Application",
+                )
+            else:
+                messages.success(
+                    request,
+                    f"{honors} for Honors Application, {minors} for Minors Application",
+                )
         elif appliedForHonors and not appliedForMinors:
-            applyHonors(request, studentdata, cgpa)
+            honors = applyHonors(request, studentdata, cgpa)
             MinorsModel.objects.filter(rollno=student.username).delete()
+            if honors == "Unable to submit":
+                messages.error(request, f"{honors} for Honors Application")
+            else:
+                messages.success(request, f"{honors} for Honors Application")
+
         elif appliedForMinors and not appliedForHonors:
-            applyMinors(request, studentdata, cgpa)
+            minors = applyMinors(request, studentdata, cgpa)
             HonorsModel.objects.filter(rollno=student.username).delete()
 
-        return redirect("/")
+            if minors == "Unable to submit":
+                messages.error(request, f"{minors} for Minors Application")
+            else:
+                messages.success(request, f"{minors} for Minors Application")
+
+        return render(
+            request,
+            "submitted.html",
+        )
 
 
 def applyHonors(request, studentdata, cgpa):
@@ -93,17 +123,12 @@ def applyHonors(request, studentdata, cgpa):
                 },
             )
             if created:
-                message = f"{student.first_name} applied successfully!"
-                messages.success(request, message)
-                print(f"Changes submitted")
+                return "Application submitted"
             else:
-                print(f"Applied for the course")
+                return "Changes submitted"
 
         except Exception as e:
-            print(e)
-            message = "unable to apply"
-            messages.error(request, message)
-            return render(request, "mainpage.html", {"alerting": message})
+            return "Unable to submit"
 
 
 def applyMinors(request, studentdata, cgpa):
@@ -119,23 +144,20 @@ def applyMinors(request, studentdata, cgpa):
                 },
             )
 
-            if choice2 != "none":
+            if choice2 != "None":
                 # Only include choice2 in the database update if it is not None
                 data.courseChoice2 = choice2
+            else:
+                data.courseChoice2 = None
             data.courseChoice1 = choice1
             data.save()
 
             if created:
-                message = f"{student.first_name} applied successfully!"
-                messages.success(request, message)
-                print(f"Changes submitted")
+                return "Application submitted"
             else:
-                print(f"Applied for the course")
+                return "Changes submitted"
         except Exception as e:
-            print(e)
-            message = "unable to apply"
-            messages.error(request, message)
-            return render(request, "mainpage.html", {"alerting": message})
+            return "Unable to submit"
 
 
 def home(request):
