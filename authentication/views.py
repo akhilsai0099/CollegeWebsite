@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from urllib.parse import urlparse
 
 # Create your views here.
 
@@ -12,6 +13,9 @@ def logout(request):
 
 
 def login(request):
+    next_url = request.GET.get("next")
+    if next_url:
+        request.session["next_url"] = next_url
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -23,6 +27,11 @@ def login(request):
 
             if user is not None:
                 auth.login(request, user=user)
+                next_url = request.session.get("next_url")
+                del request.session["next_url"]
+                if next_url:
+                    return redirect(next_url)
+
                 return HttpResponseRedirect("/")
             else:
                 messages.error(request, "Invalid username or password")

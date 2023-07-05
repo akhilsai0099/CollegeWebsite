@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 from AdminControl.models import UserData
 from django.contrib.auth.decorators import login_required
 from AdminControl.models import UserData, HonorsModel, MinorsModel
