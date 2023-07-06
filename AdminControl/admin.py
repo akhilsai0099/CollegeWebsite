@@ -130,45 +130,35 @@ class HonorsModelControl(admin.ModelAdmin):
 
     def filterHonors(self, request):
         if request.method == "POST":
-            is_honors_not_filterd = HonorsModel.objects.filter(
-                selectedDept=None
-            ).exists()
-            if not is_honors_not_filterd:
-                unique_depts = HonorsModel.objects.values_list(
-                    "dept", flat=True
-                ).distinct()
-                try:
-                    top_records_rollno = []
-                    for dept in unique_depts:
-                        top_records = HonorsModel.objects.filter(dept=dept).order_by(
-                            "-scgpa"
-                        )[:FILTERNUMBER]
-                        top_record_ids = top_records.values_list("rollno", flat=True)
-                        top_records_rollno.extend(top_record_ids)
+            unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
+            try:
+                top_records_rollno = []
+                for dept in unique_depts:
+                    top_records = HonorsModel.objects.filter(dept=dept).order_by(
+                        "-scgpa"
+                    )[:FILTERNUMBER]
+                    top_record_ids = top_records.values_list("rollno", flat=True)
+                    top_records_rollno.extend(top_record_ids)
 
-                        for index, record in enumerate(top_records, start=1):
-                            try:
-                                UserData.objects.get(
-                                    rollno=record.rollno
-                                ).update_honors_dept(dept)
-                            except Exception as e:
-                                print(f"{record.rollno} {e}")
-                            record.selectedDept = f"{dept}"
-                            record.save()
+                    for index, record in enumerate(top_records, start=1):
+                        try:
+                            UserData.objects.get(
+                                rollno=record.rollno
+                            ).update_honors_dept(dept)
+                        except Exception as e:
+                            print(f"{record.rollno} {e}")
+                        record.selectedDept = f"{dept}"
+                        record.save()
 
-                    HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
-                    MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
+                HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
+                MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
 
-                    messages.success(request, "Data has been filtered")
-                    return redirect("/admin/AdminControl/honorsmodel/")
-                except Exception as e:
-                    print(e)
-                    messages.error(request, f"Error Occured {e}")
-            else:
-                messages.error(
-                    request,
-                    "You have not filterd Honors data, Please filter Honors data before filtering minors data",
-                )
+                messages.success(request, "Data has been filtered")
+                return redirect("/admin/AdminControl/honorsmodel/")
+            except Exception as e:
+                print(e)
+                messages.error(request, f"Error Occured {e}")
+
         return render(request, "admin/filterHonors.html")
 
     def download_csv(self, request):
@@ -264,29 +254,37 @@ class MinorsModelControl(admin.ModelAdmin):
 
     def filterMinors(self, request):
         if request.method == "POST":
-            choice1_depts = MinorsModel.objects.values_list(
-                "courseChoice1", flat=True
-            ).distinct()
-            choice2_depts = MinorsModel.objects.values_list(
-                "courseChoice2", flat=True
-            ).distinct()
-            choice2_depts = [dept for dept in choice2_depts if dept != None]
+            is_honors_not_filterd = HonorsModel.objects.filter(
+                selectedDept=None
+            ).exists()
+            if not is_honors_not_filterd:
+                choice1_depts = MinorsModel.objects.values_list(
+                    "courseChoice1", flat=True
+                ).distinct()
+                choice2_depts = MinorsModel.objects.values_list(
+                    "courseChoice2", flat=True
+                ).distinct()
+                choice2_depts = [dept for dept in choice2_depts if dept != None]
 
-            available = {
-                "CSE": FILTERNUMBER,
-                "ECE": FILTERNUMBER,
-                "IT": FILTERNUMBER,
-                "CIVIL": FILTERNUMBER,
-                "MECH": FILTERNUMBER,
-                "MET": FILTERNUMBER,
-                "EEE": FILTERNUMBER,
-            }
-            self.filter(available, choice1_depts, "courseChoice1")
-            self.filter(available, choice2_depts, "courseChoice2")
-            MinorsModel.objects.filter(selectedDept=None).delete()
-            return redirect("../")
-
-        return render(request, "admin/filterMinors.html")
+                available = {
+                    "CSE": FILTERNUMBER,
+                    "ECE": FILTERNUMBER,
+                    "IT": FILTERNUMBER,
+                    "CIVIL": FILTERNUMBER,
+                    "MECH": FILTERNUMBER,
+                    "MET": FILTERNUMBER,
+                    "EEE": FILTERNUMBER,
+                }
+                self.filter(available, choice1_depts, "courseChoice1")
+                self.filter(available, choice2_depts, "courseChoice2")
+                MinorsModel.objects.filter(selectedDept=None).delete()
+                messages.success(request, "Data has been filtered")
+            else:
+                messages.error(
+                    request,
+                    "You have not filterd Honors data, Please filter Honors data before filtering minors data",
+                )
+        return redirect("/admin/AdminControl/minorsmodel")
 
     def download_csv(self, request):
         if request.method == "POST":
