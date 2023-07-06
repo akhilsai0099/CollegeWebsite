@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import UserData
 from django.contrib import messages
 import csv
 
@@ -30,8 +29,6 @@ def upload_data_from_csv(request, model, batchCode, field_mappings):
                     data_fields[model_field] = None
                 else:
                     data_fields[model_field] = row[csv_field]
-            if model == UserData:
-                data_fields["batchCode"] = batchCode
             userdata, created = model.objects.update_or_create(
                 rollno=data_fields["rollno"], defaults=data_fields
             )

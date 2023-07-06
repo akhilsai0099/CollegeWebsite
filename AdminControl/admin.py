@@ -39,20 +39,61 @@ class UserDataControl(admin.ModelAdmin):
 
     def upload_csv(self, request):
         if request.method == "POST":
-            batchCode = request.POST.get("batchCode")
-            print(batchCode)
-            field_mappings = [
-                (0, "rollno"),
-                (1, "name"),
-                (2, "branch"),
-                (3, "email"),
-                (4, "phone"),
-                (5, "total_credits"),
-                (6, "total_grade"),
-                (7, "scgpa"),
-            ]
+            csv_file = request.FILES.get("csv_upload")
+            batchCode = request.POST["batchCode"]
+            # print(batchCode)
 
-            upload_data_from_csv(request, UserData, batchCode, field_mappings)
+            if not csv_file:
+                messages.warning(request, "Please upload a CSV file")
+                return HttpResponseRedirect(request.path_info)
+
+            if not csv_file.name.endswith(".csv"):
+                messages.warning(request, "Please upload a CSV file")
+                return HttpResponseRedirect(request.path_info)
+
+            decoded_file = csv_file.read().decode("utf-8").splitlines()
+            reader = csv.reader(decoded_file)
+
+            for row in reader:
+                rollno = row[0]
+                name = row[1]
+                branch = row[2]
+                email = row[3]
+                phone = row[4]
+                scgpa = row[7]
+                total_credits = row[5]
+                total_grade = row[6]
+
+                try:
+                    userdata, created = UserData.objects.update_or_create(
+                        rollno=rollno,
+                        defaults={
+                            "name": name,
+                            "branch": branch,
+                            "email": email,
+                            "phone": phone,
+                            "scgpa": scgpa,
+                            "total_credits": total_credits,
+                            "total_grade": total_grade,
+                            "batchCode": batchCode,
+                        },
+                    )
+
+                    if created:
+                        User.objects.create_user(
+                            username=rollno, password=phone, first_name=name
+                        )
+                        messages.success(request, f"Data added for Roll No: {rollno}")
+                    else:
+                        messages.success(request, f"Data updated for Roll No: {rollno}")
+                except Exception as e:
+                    messages.error(
+                        request,
+                        f"Error updating/adding data for Roll No: {rollno} - {str(e)}",
+                    )
+
+            messages.success(request, "Data has been uploaded from the CSV file")
+            return HttpResponseRedirect(request.path_info)
 
         form = CsvImportForm()
         body = {"form": form}
@@ -89,32 +130,45 @@ class HonorsModelControl(admin.ModelAdmin):
 
     def filterHonors(self, request):
         if request.method == "POST":
-            unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
-            try:
-                top_records_rollno = []
-                for dept in unique_depts:
-                    top_records = HonorsModel.objects.filter(dept=dept).order_by(
-                        "-scgpa"
-                    )[:FILTERNUMBER]
-                    top_record_ids = top_records.values_list("rollno", flat=True)
-                    top_records_rollno.extend(top_record_ids)
+            is_honors_not_filterd = HonorsModel.objects.filter(
+                selectedDept=None
+            ).exists()
+            if not is_honors_not_filterd:
+                unique_depts = HonorsModel.objects.values_list(
+                    "dept", flat=True
+                ).distinct()
+                try:
+                    top_records_rollno = []
+                    for dept in unique_depts:
+                        top_records = HonorsModel.objects.filter(dept=dept).order_by(
+                            "-scgpa"
+                        )[:FILTERNUMBER]
+                        top_record_ids = top_records.values_list("rollno", flat=True)
+                        top_records_rollno.extend(top_record_ids)
 
-                    for index, record in enumerate(top_records, start=1):
-                        try:
-                            UserData.objects.get(
-                                rollno=record.rollno
-                            ).update_honors_dept(dept)
-                        except Exception as e:
-                            print(f"{record.rollno} {e}")
-                        record.selectedDept = f"{dept}"
-                        record.save()
+                        for index, record in enumerate(top_records, start=1):
+                            try:
+                                UserData.objects.get(
+                                    rollno=record.rollno
+                                ).update_honors_dept(dept)
+                            except Exception as e:
+                                print(f"{record.rollno} {e}")
+                            record.selectedDept = f"{dept}"
+                            record.save()
 
-                HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
-                MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
+                    HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
+                    MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
 
-                return redirect("/admin/AdminControl/honorsmodel/")
-            except Exception as e:
-                print(e)
+                    messages.success(request, "Data has been filtered")
+                    return redirect("/admin/AdminControl/honorsmodel/")
+                except Exception as e:
+                    print(e)
+                    messages.error(request, f"Error Occured {e}")
+            else:
+                messages.error(
+                    request,
+                    "You have not filterd Honors data, Please filter Honors data before filtering minors data",
+                )
         return render(request, "admin/filterHonors.html")
 
     def download_csv(self, request):
