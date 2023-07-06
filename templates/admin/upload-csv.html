@@ -1,4 +1,28 @@
 {% extends 'admin/base.html' %}
+{% block extrahead %}
+<style>
+    form {
+        display: inline;
+    }
+
+    /* Add your additional styles here */
+    form .button {
+        margin: 0px;
+        padding: 10px 15px;
+        font-weight: 500;
+    }
+
+    .div {
+        display: inline;
+    }
+
+    @media (max-width: 1024px) {
+        form .button {
+            padding: 7px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div>
@@ -7,7 +31,8 @@
         {% csrf_token %}
         <button type="submit" class="button">Upload File</button>
     </form>
-    <br>
-    <a href="/admin/AdminControl/userdata/" class="button">Back</a>
+    <div class="div">
+        <a href="/admin/AdminControl/userdata/"><button class="button">Back</button></a>
+    </div>
 </div>
 {% endblock %}
