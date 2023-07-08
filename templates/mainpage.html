@@ -659,6 +659,9 @@
         if (checkbox.checked) {
             if (v < 7.5) {
                 text.style.display = "block";
+                setTimeout(() => {
+                    text.style.display = "none";
+                }, 2000)
                 checkbox.checked = false;
             } else {
                 box.value = 'selected';
