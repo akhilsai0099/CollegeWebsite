@@ -11,9 +11,9 @@
 </div>
 {% elif message.tags == 'success' %}
 <div class="alert alert-success" role="alert">
-    {{ message }}
+    <h3>{{ message }}</h3>
 </div>
-<a href="/">Go to Home</a>
+<a href="/" style="font-size: 30px;margin-top: 20px;">Go to Home</a>
 {% endif %}
 {% endfor %}
 {% endif %}
