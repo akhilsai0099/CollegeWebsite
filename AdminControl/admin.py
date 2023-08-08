@@ -165,7 +165,7 @@ class HonorsModelControl(admin.ModelAdmin):
         if request.method == "POST":
             unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
             file_path = f"honors.csv"
-            with open(file_path, "w", newline="") as csvfile:
+            with open(file_path, "w", newline="", encoding="utf-8-sig") as csvfile:
                 for selected_dept in unique_depts:
                     writer = csv.writer(csvfile)
                     writer.writerow(
