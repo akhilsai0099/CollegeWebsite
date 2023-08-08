@@ -8,29 +8,127 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <title>{% block title %} Home {%endblock%}</title>
 </head>
+<style>
+    body{
+        margin-top: 20px;
+        text-align: center;
+    }
+    .apply{
+        padding-top: 100px;
+    }
+    .msg{
+        position: absolute;
+        bottom:100px;
+        width:100%;
+        color: darkgreen;
+    }
+    .welcome{
+        background-color: rgb(220 237 234);
+        font-size:50px;
+    }
+    .logout{
+        
+        font-size: larger;
+        position:fixed;
+        top:30px;
+        right:5%;
+        z-index:9999;
+    }
+    .link-primary{
+        font-size: xx-large;
+        animation: blink 1s linear infinite;
+        
+    }
+    .login{
+        padding-top: 100px;
+        text-align: center;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    @media (max-width: 1200px) {
+        .welcome{
+            font-size: 50px;
+
+        }
+        .link-primary{
+            font-size: 40px;
+        }
+       
+}
+@media(max-width:768px){
+    .welcome{
+        font-size: 40px;
+        text-align: left;
+    }
+    .link-primary{
+        font-size: 30px;
+    }
+    .logout{
+        right:3%;
+        top:25px;
+    }
+    
+}
+@media(max-width:480px){
+    .welcome{
+        font-size: 30px;
+        text-align: left;
+    }
+    .link-primary{
+        font-size: 20px;
+    }
+    .logout{
+        right:2%;
+        top:20px;
+    }
+}
+@media (max-width: 400px) and (max-height: 755px) {
+    .welcome{
+        font-size: 25px;
+        text-align:left;
+        }
+    .link-primary{
+        font-size: 20px;
+    }
+    .logout{
+        right:2%;
+        top:15px;
+    }
+
+}
+</style>
 
 <body>
     {%block body%}
     {% if user.is_authenticated %}
-    <h1>Welcome, {{ user.first_name }}</h1>
+    <h1 class="welcome">Welcome, {{ user.first_name }}</h1>
     {% if message %}
-    <a href="/honorsMinorsApplication">Modify Honors/Minors Application</a>
+    <div class="apply">
+    <a href="/honorsMinorsApplication" class="link-primary" id="blink">Modify Honors/Minors Application</a>
+    </div>
     {% else %}
-    <a href="/honorsMinorsApplication">Apply for Honors/Minors</a>
+    <div class="apply">
+    <a href="/honorsMinorsApplication" class="link-primary" id="blink">Apply for Honors/Minors</a>
+    </div>
     {%endif%}
-    <a href="/auth/logout">logout</a>
+    <div class="logout">
+    <a href="/auth/logout" class="btn btn-dark btn-block" role="button"></span>log out</a>
+    </div>
     {% if message != None %}
-    <h1>{{ message }}</h1>
+    <div class="msg">
+    <h3 class="alert alert-success">{{ message }}</h3>
+    </div>
     {%endif%}
     {% else %}
-    <li class="nav-item">
-        <a class="nav-link" href="/accounts/register">Register</a>
-    <li class="nav-item">
-        <a class="nav-link" href="/auth/login">Login</a>
-
+    <div class="login">
+        <a class="btn btn-dark" href="/auth/login">Login </a>
+        </div>
         {% endif %}
 
         {%endblock%}
+        
 </body>
 
 </html>
+
