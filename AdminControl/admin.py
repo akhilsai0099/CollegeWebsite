@@ -90,7 +90,7 @@ class UserDataControl(admin.ModelAdmin):
 
                     )
                     User.objects.create_user(
-                        username=rollno, password=phone, first_name=name
+                        username=rollno, password=phone, first_name=name,email=email
                     )
                     messages.success(request, f"Data added for Roll No: {rollno}")
 
