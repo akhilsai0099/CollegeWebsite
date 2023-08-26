@@ -7,30 +7,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <title>{% block title %} Home {%endblock%}</title>
+
+    <style>
+        .name {
+            margin-left: -40px;
+        }
+
+        .body {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 15vh;
+        }
+
+        .name {
+            display: flex;
+
+        }
+
+        .studentname {
+            color: orange;
+            margin-left: 10px;
+        }
+
+        .btn {
+            background-color: orange;
+            color: white;
+            margin-top: 20px;
+            width: 220px;
+        }
+
+        .btn a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn a:hover {
+            color: black;
+        }
+
+        .changepassword {
+            display: none;
+        }
+
+        .visible {
+            display: block;
+        }
+
+        .body li {
+            list-style: none;
+            font-size: 1rem;
+            border: 2px solid orange;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 5vh;
+        }
+
+        .body li a {
+            color: orange;
+        }
+
+        .message {
+            font-size: 1rem;
+            color: green;
+            margin-top: 20px;
+            margin-left: -70px;
+        }
+
+        .messages {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
 </head>
 
 <body>
-    {%block body%}
-    {% if user.is_authenticated %}
-    <h1>Welcome, {{ user.first_name }}</h1>
-    {% if message %}
-    <a href="/honorsMinorsApplication">Modify Honors/Minors Application</a>
-    {% else %}
-    <a href="/honorsMinorsApplication">Apply for Honors/Minors</a>
-    {%endif%}
-    <a href="/auth/logout">logout</a>
-    {% if message != None %}
-    <h1>{{ message }}</h1>
-    {%endif%}
-    {% else %}
-    <li class="nav-item">
-        <a class="nav-link" href="/accounts/register">Register</a>
-    <li class="nav-item">
-        <a class="nav-link" href="/auth/login">Login</a>
+    <div class="body">
+        {%block body%}
+        {% if user.is_authenticated %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="name">
+                <h1>Welcome, </h1>
+                <div class="studentname">
+                    <h1 name="name">{{ user.first_name }}</h1>
+                </div>
+            </div>
+            {% if message %}
+            <button class="btn"><a href="/honorsMinorsApplication">Modify Honors/Minors</a></button>
+            {% else %}
+            <button class="btn"><a href="/honorsMinorsApplication">Apply for Honors/Minors</a></button>
+            {%endif%}
+            <div class='Change PWD'>
+                <button class="btn " id="btn">
+                    <a href="{% url 'course_application:changepassword' %}" >Change Password</a>
 
-        {% endif %}
+                </button>
+            </div>
 
-        {%endblock%}
+
+            <button class="btn"><a href="/auth/logout">LOGOUT</a></button>
+
+        </form>
+        <div class="messages">
+            {% if message != None %}
+            <h1 class="message">{{ message }}</h1>
+            {%endif%}
+        </div>
+        {% else %}
+
+        <li class="nav-item">
+            <a class="nav-link" href="/accounts/register">REGISTER</a>
+        <li class="nav-item">
+            <a class="nav-link" href="/auth/login">LOGIN</a>
+
+
+            {% endif %}
+
+            {%endblock%}
+    </div>
 </body>
+
 
 </html>

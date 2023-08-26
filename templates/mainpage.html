@@ -392,6 +392,10 @@
                 margin-left: 10vh;
                 font-size: 30px;
             }
+            .label{
+                margin-left: 15%;
+               
+            }
         }
 
         @media (max-width:715px) {
@@ -401,7 +405,14 @@
             }
 
             .form {
-                margin-left: 5vh;
+                margin-left: 10%;
+            }
+            .label{
+                margin-left: 15%;
+               
+            }
+            .applysec{
+                margin-left: -2%;
             }
 
         }
@@ -418,7 +429,7 @@
             }
 
             .form {
-                margin-left: 3vw;
+                margin-left: 10%;
             }
 
         }
@@ -426,9 +437,8 @@
         @media (max-width:438px) {
             .form {
                 width: fit-content;
+                margin-left: 8%;
             }
-
-
             .form2 {
                 margin-left: -2vw;
             }
@@ -592,6 +602,23 @@
                     <option value="MET">MET</option>
                 </select>
             </div>
+
+            <div class="label">
+                <label for="choices">Choice 3:</label>
+                <select id="choice3" name="choice3"
+                    style="height: 29px; border: none; color:white; background-color: #5d5555; border-radius: 3px; width:68px; font-family: 'Ysabeau Infant', sans-serif; font-size: 15px;"
+                    disabled>
+                    <option value="None">None</option>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="IT">IT</option>
+                    <option value="EEE">EEE</option>
+                    <option value="MECH">MECH</option>
+                    <option value="CIVIL">CIVIL</option>
+                    <option value="MET">MET</option>
+                </select>
+            </div>
+
         </div>
 
     </form>
@@ -609,6 +636,9 @@
 <script>
     let choice1Dropdown = document.getElementById("choice1")
     choice1Dropdown.addEventListener("input", update);
+
+    let choice2Dropdown = document.getElementById("choice2")
+    choice2Dropdown.addEventListener("input",update2);
 
 
     function eligible() {
@@ -630,11 +660,10 @@
 
         let ch1 = document.getElementById("choice1");
         let ch2 = document.getElementById("choice2");
-
-
-        if (ch1.value != 'None') {
+        let ch3 = document.getElementById("choice3");
+        if (ch1.value !== 'None') {
             ch2.innerHTML = '';
-
+            ch3.innerHtml = '';
             let selected = ch1.value;
 
             for (let i = 0; i < ch1.options.length; i++) {
@@ -649,10 +678,33 @@
             ch2.value = 'None';
         }
     }
+    
+    function update2(){
+        let ch2 = document.getElementById("choice2");
+        let ch3 = document.getElementById("choice3");
+        ch3.innerHTML = '';
+        if (ch2.value !== 'None'){
+            let selected = ch2.value;
+            
+            for(let i=0;i<ch2.options.length ; i++){
+
+                if(selected != ch2.options[i].value){
+                    let option = document.createElement('option');
+                    option.value = ch2.options[i].value;
+                    option.text = ch2.options[i].text;
+                    ch3.appendChild(option);
+                }
+            }
+        }
+        else {
+            ch3.value = 'None';
+        }
+    }
     function changechoices() {
         let box = document.getElementById("checkbox");
         let ch1 = document.getElementById('choice1');
         let ch2 = document.getElementById('choice2');
+        let ch3 = document.getElementById('choice3');
         let text = document.getElementById("alert");
         let v = document.getElementById("scgpa").value;
 
@@ -671,9 +723,11 @@
         if (box.value == "selected") {
             ch1.disabled = false;
             ch2.disabled = false;
+            ch3.disabled = false;
         } else {
             ch1.disabled = true;
             ch2.disabled = true;
+            ch3.disabled = true;
         }
     }
 
@@ -682,6 +736,7 @@
         let branch1 = document.getElementById("branch").value;
         let branches = document.getElementById("choice1");
         let branches2 = document.getElementById("choice2");
+        let branches3 = document.getElementById("choice3");
         let branchlist = [];
 
         for (let i = 0; i < branches.options.length; i++) {
@@ -689,7 +744,8 @@
             branchlist.push(branches.options[i].value);
         }
         branches.innerHTML = "";
-        branches2.innerHTML = ""
+        branches2.innerHTML = "";
+        branches3.innerHTML = "";
         if (branch1 == "CSE" || branch1 == "IT") {
             branchlist.forEach((b) => {
                 if (b != branch1 && b != "IT" && b != "CSE") {

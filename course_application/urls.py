@@ -15,4 +15,6 @@ urlpatterns = [
         name="honorsMinorsApplication",
     ),
     path("", views.home, name="home"),
+    path("changepassword/",views.changepassword,name="changepassword"),
+    path("changingpwd/",views.changingpwd,name="changingpwd"),
 ]

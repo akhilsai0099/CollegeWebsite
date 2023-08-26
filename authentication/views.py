@@ -19,19 +19,19 @@ def login(request):
         username = request.POST["username"]
         password = request.POST["password"]
 
-        if username == "" and password == "":
+        if not username  or not password :
             messages.error(request, "Username and password cannot be empty")
         else:
             user = auth.authenticate(request, username=username, password=password)
-
             if user is not None:
                 auth.login(request, user=user)
+                print(next_url)
                 next_url = request.session.get("next_url")
                 if next_url:
                     del request.session["next_url"]
                     return redirect(next_url)
-
-                return HttpResponseRedirect("/")
+                request.session["roll_number"] = username
+                return redirect("/")
             else:
                 messages.error(request, "Invalid username or password")
                 return redirect(request.path_info)
