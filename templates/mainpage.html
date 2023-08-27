@@ -657,7 +657,7 @@
         }
     }
     function update() {
-
+        update2();
         let ch1 = document.getElementById("choice1");
         let ch2 = document.getElementById("choice2");
         let ch3 = document.getElementById("choice3");
@@ -711,6 +711,9 @@
         if (checkbox.checked) {
             if (v < 7.5) {
                 text.style.display = "block";
+                setTimeout(() => {
+                    text.style.display = "none";
+                }, 2000)
                 checkbox.checked = false;
             } else {
                 box.value = 'selected';
@@ -724,9 +727,11 @@
             ch1.disabled = false;
             ch2.disabled = false;
             ch3.disabled = false;
+            ch3.disabled = false;
         } else {
             ch1.disabled = true;
             ch2.disabled = true;
+            ch3.disabled = true;
             ch3.disabled = true;
         }
     }
@@ -737,6 +742,7 @@
         let branches = document.getElementById("choice1");
         let branches2 = document.getElementById("choice2");
         let branches3 = document.getElementById("choice3");
+        let branches3 = document.getElementById("choice3");
         let branchlist = [];
 
         for (let i = 0; i < branches.options.length; i++) {
@@ -744,6 +750,8 @@
             branchlist.push(branches.options[i].value);
         }
         branches.innerHTML = "";
+        branches2.innerHTML = "";
+        branches3.innerHTML = "";
         branches2.innerHTML = "";
         branches3.innerHTML = "";
         if (branch1 == "CSE" || branch1 == "IT") {

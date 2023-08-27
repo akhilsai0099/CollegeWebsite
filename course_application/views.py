@@ -65,7 +65,7 @@ def honorsMinorsFormSubmit(request):
             else:
                 messages.success(
                     request,
-                    f"{honors} for Honors Application, {minors} for Minors Application",
+                    f"{honors} for Honors Application and {minors} for Minors Application",
                 )
         elif appliedForHonors and not appliedForMinors:
             honors = applyHonors(request, studentdata, cgpa)

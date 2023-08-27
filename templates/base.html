@@ -7,125 +7,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <title>{% block title %} Home {%endblock%}</title>
-
-    <style>
-        .name {
-            margin-left: -40px;
-        }
-
-        .body {
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 15vh;
-        }
-
-        .name {
-            display: flex;
-
-        }
-
-        .studentname {
-            color: orange;
-            margin-left: 10px;
-        }
-
-        .btn {
-            background-color: orange;
-            color: white;
-            margin-top: 20px;
-            width: 220px;
-        }
-
-        .btn a {
-            text-decoration: none;
-            color: white;
-        }
-
-        .btn a:hover {
-            color: black;
-        }
-
-        .changepassword {
-            display: none;
-        }
-
-        .visible {
-            display: block;
-        }
-
-        .body li {
-            list-style: none;
-            font-size: 1rem;
-            border: 2px solid orange;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 5vh;
-        }
-
-        .body li a {
-            color: orange;
-        }
-
-        .message {
-            font-size: 1rem;
-            color: green;
-            margin-top: 20px;
-            margin-left: -70px;
-        }
-
-        .messages {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-    </style>
 </head>
+<style>
+    body{
+        margin-top: 20px;
+        text-align: center;
+    }
+    .apply{
+        padding-top: 100px;
+    }
+    .msg{
+        position: absolute;
+        bottom:100px;
+        width:100%;
+        color: darkgreen;
+    }
+    .welcome{
+        background-color: rgb(220 237 234);
+        font-size:50px;
+    }
+    .logout{
+        
+        font-size: larger;
+        position:fixed;
+        top:30px;
+        right:5%;
+        z-index:9999;
+    }
+    .link-primary{
+        font-size: xx-large;
+        animation: blink 1s linear infinite;
+        
+    }
+    .login{
+        padding-top: 100px;
+        text-align: center;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    @media (max-width: 1200px) {
+        .welcome{
+            font-size: 50px;
+
+        }
+        .link-primary{
+            font-size: 40px;
+        }
+       
+}
+@media(max-width:768px){
+    .welcome{
+        font-size: 40px;
+        text-align: left;
+    }
+    .link-primary{
+        font-size: 30px;
+    }
+    .logout{
+        right:3%;
+        top:25px;
+    }
+    
+}
+@media(max-width:480px){
+    .welcome{
+        font-size: 30px;
+        text-align: left;
+    }
+    .link-primary{
+        font-size: 20px;
+    }
+    .logout{
+        right:2%;
+        top:20px;
+    }
+}
+@media (max-width: 400px) and (max-height: 755px) {
+    .welcome{
+        font-size: 25px;
+        text-align:left;
+        }
+    .link-primary{
+        font-size: 20px;
+    }
+    .logout{
+        right:2%;
+        top:15px;
+    }
+
+}
+</style>
 
 <body>
-    <div class="body">
-        {%block body%}
-        {% if user.is_authenticated %}
-        <form method="POST">
-            {% csrf_token %}
-            <div class="name">
-                <h1>Welcome, </h1>
-                <div class="studentname">
-                    <h1 name="name">{{ user.first_name }}</h1>
-                </div>
-            </div>
-            {% if message %}
-            <button class="btn"><a href="/honorsMinorsApplication">Modify Honors/Minors</a></button>
-            {% else %}
-            <button class="btn"><a href="/honorsMinorsApplication">Apply for Honors/Minors</a></button>
-            {%endif%}
-            <div class='Change PWD'>
-                <button class="btn " id="btn">
-                    <a href="{% url 'course_application:changepassword' %}" >Change Password</a>
+    {%block body%}
+    {% if user.is_authenticated %}
+    <h1>Welcome, {{ user.first_name }}</h1>
+    {% if message %}
+    <a href="/honorsMinorsApplication">Modify Honors/Minors Application</a>
+    {% else %}
+    <a href="/honorsMinorsApplication">Apply for Honors/Minors</a>
+    {%endif%}
+    <a href="/auth/logout">logout</a>
+    {% if message != None %}
+    <h1>{{ message }}</h1>
+    {%endif%}
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="/accounts/register">Register</a>
+    <li class="nav-item">
+        <a class="nav-link" href="/auth/login">Login</a>
 
-                </button>
-            </div>
-
-
-            <button class="btn"><a href="/auth/logout">LOGOUT</a></button>
-
-        </form>
-        <div class="messages">
-            {% if message != None %}
-            <h1 class="message">{{ message }}</h1>
-            {%endif%}
-        </div>
-        {% else %}
-
-        <li class="nav-item">
-            <a class="nav-link" href="/accounts/register">REGISTER</a>
-        <li class="nav-item">
-            <a class="nav-link" href="/auth/login">LOGIN</a>
-
-
-            {% endif %}
+        {% endif %}
 
             {%endblock%}
     </div>
@@ -133,3 +126,4 @@
 
 
 </html>
+
