@@ -2,7 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-
+from AdminControl.models import UserData
+from .helpers import send_forget_password_mail
+import uuid
+from .models import *
+from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 
@@ -38,3 +43,75 @@ def login(request):
 
     # Render the login form
     return render(request, "login.html", {"messages": messages.get_messages(request)})
+
+
+
+def ResetPassword(request , token):
+    context = {}
+    
+    
+    try:
+        profile_obj = Profile.objects.filter(forget_password_token = token).first()
+        context = {'user_id' : profile_obj.user.id}
+        
+        if request.method == 'POST':
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('reconfirm_password')
+            user_id = request.POST.get('user_id')
+            
+            if user_id is  None:
+                messages.success(request, 'No user id found.')
+                return redirect(f'/auth/reset_password/{token}/')
+            
+            if new_password == "" or confirm_password == "":
+                messages.success(request, "Please Enter the password ")
+                return redirect(f'/auth/reset_password/{token}/')
+            
+                
+            
+            if  new_password != confirm_password:
+                messages.success(request, 'Passwords do not match')
+                return redirect(f'/auth/reset_password/{token}/')
+                         
+            
+            user_obj = User.objects.get(id = user_id)
+            user_obj.set_password(new_password)
+            user_obj.save()
+            return redirect('/auth/login')
+            
+            
+            
+        
+        
+    except Exception as e:
+        print(e)
+    return render(request , 'reset_password.html' , context)
+
+
+
+def ForgetPassword(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        
+        try:
+            user_obj = User.objects.get(username=username)
+            #print(user_obj)
+            #print(user_obj.email)
+        except User.DoesNotExist:
+            messages.error(request, 'No user found with this username.')
+            return redirect(request.path_info)
+        
+        try:
+            profile_obj = Profile.objects.get(user=user_obj)
+        except ObjectDoesNotExist:
+            profile_obj = Profile.objects.create(user=user_obj, forget_password_token="")
+        
+        token = str(uuid.uuid4())
+        profile_obj.forget_password_token = token
+        profile_obj.save()
+        
+        send_forget_password_mail(user_obj.email,user_obj.first_name, token)
+        messages.success(request, 'Reset password email sent')
+        return redirect(request.path_info)
+    else:
+        return render(request, 'forget_password.html') 
