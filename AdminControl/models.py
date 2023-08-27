@@ -11,13 +11,17 @@ class UserData(models.Model):
     phone = models.CharField(max_length=10)
     total_credits = models.DecimalField(max_digits=5, decimal_places=2)
     total_grade = models.CharField(max_length=1)
-    scgpa = models.DecimalField(max_digits=3, decimal_places=2)
+    scgpa = models.DecimalField(max_digits=8, decimal_places=6)
     batchCode = models.CharField(max_length=4, null=False)
     honorsDept = models.CharField(max_length=5, null=True)
     minorsDept = models.CharField(max_length=5, null=True)
 
     def __str__(self):
         return self.name
+    
+    @property
+    def formatted_scgpa(self):
+        return "{:.2f}".format(self.scgpa)
 
     def update_honors_dept(self, new_dept):
         self.honorsDept = new_dept

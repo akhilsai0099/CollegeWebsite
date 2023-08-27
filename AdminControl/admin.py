@@ -19,14 +19,13 @@ class CsvImportForm(forms.Form):
     batchCode = forms.CharField()
     batchCode.label = "Enter the batchCode "
 
-
 class UserDataControl(admin.ModelAdmin):
     list_display = (
         "batchCode",
         "rollno",
         "name",
         "branch",
-        "scgpa",
+        "formatted_scgpa",
         "honorsDept",
         "minorsDept",
     )
@@ -60,32 +59,42 @@ class UserDataControl(admin.ModelAdmin):
                 branch = row[2]
                 email = row[3]
                 phone = row[4]
-                scgpa = row[7]
-                total_credits = row[5]
+                sgpa = row[7]
+                credits = row[5]
                 total_grade = row[6]
-
+                #print(rollno)
+            
+                
                 try:
-                    userdata, created = UserData.objects.update_or_create(
-                        rollno=rollno,
-                        defaults={
-                            "name": name,
-                            "branch": branch,
-                            "email": email,
-                            "phone": phone,
-                            "scgpa": scgpa,
-                            "total_credits": total_credits,
-                            "total_grade": total_grade,
-                            "batchCode": batchCode,
-                        },
-                    )
+                    userdata=UserData.objects.get(rollno=rollno)
+                    scgpa=((float(userdata.scgpa)*float(userdata.total_credits))+(float(sgpa)*float(credits)))/(float(userdata.total_credits)+float(credits))
+                    total_credits=float(userdata.total_credits)+float(credits)
 
-                    if created:
-                        User.objects.create_user(
-                            username=rollno, password=phone, first_name=name
-                        )
-                        messages.success(request, f"Data added for Roll No: {rollno}")
-                    else:
-                        messages.success(request, f"Data updated for Roll No: {rollno}")
+                    userdata.scgpa=scgpa
+                    userdata.total_credits=total_credits
+
+                    userdata.save()
+
+                    messages.success(request, f"Data updated for Roll No: {rollno}")
+                except UserData.DoesNotExist:
+                    UserData.objects.create(
+                        rollno=rollno,
+                        name=name,
+                        branch=branch,
+                        email=email,
+                        phone=phone,
+                        scgpa=sgpa,
+                        total_credits=credits,
+                        total_grade=total_grade,
+                        batchCode=batchCode
+
+                    )
+                    User.objects.create_user(
+                        username=rollno, password=phone, first_name=name,email=email
+                    )
+                    messages.success(request, f"Data added for Roll No: {rollno}")
+
+                    
                 except Exception as e:
                     messages.error(
                         request,
