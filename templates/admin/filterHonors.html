@@ -1,12 +1,56 @@
 {% extends 'admin/base.html' %}
 
+{% block extrastyle %}
+<style>
+
+    .container{
+        display: flex;
+        /* flex-direction: column; */
+        gap: 10px;
+        /* align-items: center; */
+        justify-content: center;
+    }
+
+    form {
+        display: inline;
+    }
+
+    form .button {
+        margin: 0px;
+        padding: 10px 15px;
+        font-weight: 500;
+    }
+
+    .button{
+        padding: 4px;
+    }
+    .back>a{
+        padding: 7px;
+    }
+
+    @media (max-width: 1024px) {
+        form .button{
+            padding: 7px;
+        }
+    }
+</style>
+{{block.super}}
+{% endblock %}
+
 {% block content %}
-<div>
-    <form action="." method="POST" enctype="multipart/form-data">
-        {% csrf_token%}
-        <button type="submit" class="button">Filter</button>
-    </form>
-    <br>
-    <a href="/admin/AdminControl/honorsmodel/" class="button">Back</a>
+
+<div class="container">
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+            {% csrf_token%}
+            <div>
+                {{form.batchCode}}
+            </div>
+            <button type="submit" class="button">Filter</button>
+        </form>
+        <div class="back">
+        <a href="/admin/AdminControl/honorsmodel/" class="button">Back</a>
+    </div>
+    </div>
 </div>
 {% endblock %}

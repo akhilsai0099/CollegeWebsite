@@ -16,7 +16,7 @@ def honorsMinorsApplication(request):
             studentbranch = student.branch
             studentcgpa = student.scgpa
             studentroll = student.rollno
-            studentYear = int(datetime.today().strftime("%y")) - int(student.batchCode)
+            studentYear = int(datetime.today().strftime("%y")) - int(student.batchCode[2:4])
             return render(
                 request,
                 "mainpage.html",
@@ -24,7 +24,7 @@ def honorsMinorsApplication(request):
                     "name": studentname,
                     "branch": studentbranch,
                     "rollno": studentroll,
-                    "cgpa": studentcgpa,
+                    "cgpa": round(studentcgpa,2),
                     "year": studentYear,
                 },
             )
@@ -89,6 +89,7 @@ def applyHonors(request, studentdata, cgpa):
         try:
             data, created = HonorsModel.objects.update_or_create(
                 rollno=studentdata.rollno,
+                batchCode = studentdata.batchCode,
                 defaults={
                     "dept": studentdata.branch,
                     "scgpa": studentdata.scgpa,
@@ -100,6 +101,7 @@ def applyHonors(request, studentdata, cgpa):
                 return "Changes submitted"
 
         except Exception as e:
+            print(e)
             return "Unable to submit"
 
 
@@ -111,6 +113,7 @@ def applyMinors(request, studentdata, cgpa):
 
             data, created = MinorsModel.objects.update_or_create(
                 rollno=studentdata.rollno,
+                batchCode = studentdata.batchCode ,
                 defaults={
                     "scgpa": studentdata.scgpa,
                 },

@@ -10,7 +10,7 @@
 </head>
 <style>
     body{
-        margin-top: 20px;
+        /* margin-top: 20px; */
         text-align: center;
     }
     .apply{
@@ -23,29 +23,33 @@
         color: darkgreen;
     }
     .welcome{
-        background-color: rgb(220 237 234);
+        align-items: center;
+        margin-top: 0.8rem;
         font-size:50px;
     }
-    .logout{
-        
-        font-size: larger;
-        position:fixed;
-        top:30px;
-        right:5%;
-        z-index:9999;
+    .nav{
+        display: flex;
+        padding: 5px 10px;
+        background-color: rgba(234, 239, 236, 0.66);
+        justify-content: flex-end;
+    }
+
+    .profile{
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
     .link-primary{
-        font-size: xx-large;
-        animation: blink 1s linear infinite;
+        font-size: 1.5rem;
+        
         
     }
     .login{
         padding-top: 100px;
         text-align: center;
     }
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
+    
     @media (max-width: 1200px) {
         .welcome{
             font-size: 50px;
@@ -59,7 +63,7 @@
 @media(max-width:768px){
     .welcome{
         font-size: 40px;
-        text-align: left;
+        /* text-align: left; */
     }
     .link-primary{
         font-size: 30px;
@@ -73,7 +77,7 @@
 @media(max-width:480px){
     .welcome{
         font-size: 30px;
-        text-align: left;
+        /* text-align: left; */
     }
     .link-primary{
         font-size: 20px;
@@ -102,19 +106,27 @@
 <body>
     {%block body%}
     {% if user.is_authenticated %}
-    <h1 class="welcome">Welcome, {{ user.first_name }}</h1>
+    <div class="nav">
+        
+        <div class="profile">
+            <div><a href="{% url 'authentication:changepassword' %}" class="changepwd">Change Password</div>
+                <div class="logout">
+                    <a href="/auth/logout" class="btn btn-dark btn-block" role="button"></span>log out</a>
+                </div>
+            </div>
+            
+        </div>
+        <h1 class="welcome">Welcome, {{ user.first_name }}</h1>
     {% if message %}
     <div class="apply">
-    <a href="/honorsMinorsApplication" class="link-primary" id="blink">Modify Honors/Minors Application</a>
+    <a href="/honorsMinorsApplication" class="link-primary" >Modify Honors/Minors Application</a>
     </div>
     {% else %}
     <div class="apply">
-    <a href="/honorsMinorsApplication" class="link-primary" id="blink">Apply for Honors/Minors</a>
+    <a href="/honorsMinorsApplication" class="link-primary" >Apply for Honors/Minors</a>
     </div>
     {%endif%}
-    <div class="logout">
-    <a href="/auth/logout" class="btn btn-dark btn-block" role="button"></span>log out</a>
-    </div>
+    
     {% if message != None %}
     <div class="msg">
     <h3 class="alert alert-success">{{ message }}</h3>

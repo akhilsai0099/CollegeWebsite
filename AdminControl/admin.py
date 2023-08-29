@@ -1,10 +1,12 @@
 from django.contrib import admin, messages
-from .models import UserData, HonorsModel, MinorsModel
+from .models import UserData, HonorsModel, MinorsModel, BatchCode
 from django import forms
 from django.urls import path, reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponseRedirect
+
+from .forms import BatchForm
 from .views import upload_data_from_csv
 import csv
 
@@ -16,8 +18,10 @@ FILTERNUMBER = 21
 class CsvImportForm(forms.Form):
     csv_upload = forms.FileField()
     csv_upload.label = "Upload a CSV file"
-    batchCode = forms.CharField()
-    batchCode.label = "Enter the batchCode "
+    batchCode = forms.ModelChoiceField(queryset=BatchCode.objects.all(), empty_label=None)
+    batchCode.label = "Select the batchCode "
+
+
 
 class UserDataControl(admin.ModelAdmin):
     list_display = (
@@ -40,7 +44,7 @@ class UserDataControl(admin.ModelAdmin):
         if request.method == "POST":
             csv_file = request.FILES.get("csv_upload")
             batchCode = request.POST["batchCode"]
-            # print(batchCode)
+            print(batchCode)
 
             if not csv_file:
                 messages.warning(request, "Please upload a CSV file")
@@ -62,7 +66,7 @@ class UserDataControl(admin.ModelAdmin):
                 sgpa = row[7]
                 credits = row[5]
                 total_grade = row[6]
-                #print(rollno)
+
             
                 
                 try:
@@ -76,7 +80,7 @@ class UserDataControl(admin.ModelAdmin):
                     userdata.save()
 
                     messages.success(request, f"Data updated for Roll No: {rollno}")
-                except UserData.DoesNotExist:
+                except Exception as e:
                     UserData.objects.create(
                         rollno=rollno,
                         name=name,
@@ -87,7 +91,6 @@ class UserDataControl(admin.ModelAdmin):
                         total_credits=credits,
                         total_grade=total_grade,
                         batchCode=batchCode
-
                     )
                     User.objects.create_user(
                         username=rollno, password=phone, first_name=name,email=email
@@ -110,9 +113,9 @@ class UserDataControl(admin.ModelAdmin):
 
 
 class HonorsModelControl(admin.ModelAdmin):
-    list_display = ["rollno", "dept", "scgpa", "selectedDept"]
+    list_display = ['batchCode',"rollno", "dept", "scgpa", "selectedDept"]
     ordering = ["dept", "-scgpa"]
-
+    
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
@@ -121,6 +124,7 @@ class HonorsModelControl(admin.ModelAdmin):
             path("downloadHonorsData/", self.download_csv),
         ]
         return my_urls + urls
+
 
     def uploadHonors(self, request):
         if request.method == "POST":
@@ -139,11 +143,12 @@ class HonorsModelControl(admin.ModelAdmin):
 
     def filterHonors(self, request):
         if request.method == "POST":
+            batch = request.POST['batchCode']
             unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
             try:
                 top_records_rollno = []
                 for dept in unique_depts:
-                    top_records = HonorsModel.objects.filter(dept=dept).order_by(
+                    top_records = HonorsModel.objects.filter(dept=dept,batchCode=batch).order_by(
                         "-scgpa"
                     )[:FILTERNUMBER]
                     top_record_ids = top_records.values_list("rollno", flat=True)
@@ -167,8 +172,9 @@ class HonorsModelControl(admin.ModelAdmin):
             except Exception as e:
                 print(e)
                 messages.error(request, f"Error Occured {e}")
-
-        return render(request, "admin/filterHonors.html")
+        form = BatchForm()
+        context = {'form': form}
+        return render(request, "admin/filterHonors.html",context)
 
     def download_csv(self, request):
         if request.method == "POST":
@@ -197,6 +203,7 @@ class HonorsModelControl(admin.ModelAdmin):
 
 class MinorsModelControl(admin.ModelAdmin):
     list_display = [
+        'batchCode',
         "rollno",
         "courseChoice1",
         "courseChoice2",
@@ -324,6 +331,10 @@ class MinorsModelControl(admin.ModelAdmin):
         return render(request, "admin/downloadCsv.html")
 
 
+class Batch(admin.ModelAdmin):
+    pass
+
 admin.site.register(UserData, UserDataControl)
 admin.site.register(HonorsModel, HonorsModelControl)
 admin.site.register(MinorsModel, MinorsModelControl)
+admin.site.register(BatchCode, Batch)

@@ -7,6 +7,7 @@ from .helpers import send_forget_password_mail
 import uuid
 from .models import *
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
@@ -115,3 +116,39 @@ def ForgetPassword(request):
         return redirect(request.path_info)
     else:
         return render(request, 'forget_password.html') 
+    
+
+#code for changing password
+@login_required
+def changepassword(request):
+    return render(request,"changepwd.html")
+
+
+@login_required
+def changingpwd(request):
+    if request.method == "POST":
+        try:
+            oldpassword = request.POST.get("oldpassword")
+            newpass = request.POST.get("newpassword")
+            newpass2 = request.POST.get("newpassword2")
+            
+            user = request.user
+            if user.check_password(oldpassword) :
+                if(newpass == newpass2):
+                    user.set_password(newpass)
+                    user.save()
+                        
+                    messages.success(request, "Password Changed")
+                    return redirect('/auth/login')
+                else:
+                    messages.error(request,'New passwords are not matching')
+            else:
+                messages.error(request,"your old password is Incorrect")
+        except User.DoesNotExist:
+            messages.error(request, 'User does not exist')
+        except Exception as e:
+            messages.error(request,e)
+    else:
+        pass
+    
+    return render(request,"changepwd.html")

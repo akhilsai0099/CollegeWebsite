@@ -23,10 +23,9 @@
 {% block content %}
 
 
-<form action="filterHonors/" method="POST">
-    {% csrf_token %}
-    <button class="button" type="submit">Filter Honors Students</button>
-</form>
+
+    <a href="filterHonors/"><button class="button" type="submit">Filter Honors Students</button></a>
+
 <a href="uploadHonors/"><button class="button">Upload data</button></a>
 <button class="button" onclick="buttonClicked()">Download CSV</button>
 
