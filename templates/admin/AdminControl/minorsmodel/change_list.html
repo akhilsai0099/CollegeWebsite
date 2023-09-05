@@ -23,10 +23,9 @@
 {% block content %}
 
 
-<form action="filterMinors/" method="POST">
-    {% csrf_token %}
-    <button class="button" type="submit">Filter Minors Students</button>
-</form>
+<a href="filterMinors/"><button class="button" type="submit">Filter Minors Students</button></a>
+
+
 <a href="uploadMinors/"><button class="button">Upload data</button></a>
 <button class="button" onclick="buttonClicked()">Download CSV</button>
 <button class="button" onclick="downloadWaitingList()">Download Minors Data</button>
