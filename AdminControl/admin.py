@@ -384,38 +384,44 @@ class MinorsModelControl(admin.ModelAdmin):
                                                 user.save()
                                                 student.save()
                                                 available[choice] -= 1
-                                                print(available)
-                                                print(f"student is selected {student.rollno}")
                                             except Exception as e:
                                                 print(f"{student.rollno} {e}")
                                         else:
-                                            try:
-                                                if (
-                                                    waiting[choice] > 0
-                                                    and student.waiting_list1 is None
-                                                ):
-                                                    student.waiting_list1 = choice
-                                                    waiting[choice] -= 1
-                                                    student.save()
-                                                elif (
-                                                    waiting[choice] > 0
-                                                    and student.waiting_list2 is None
-                                                ):
-                                                    student.waiting_list2 = choice
-                                                    waiting[choice] -= 1
-                                                    student.save()
-                                                elif (
-                                                    waiting[choice] > 0
-                                                    and student.waiting_list3 is None
-                                                ):
-                                                    student.waiting_list3 = choice
-                                                    waiting[choice] -= 1
-                                                    student.save()
-                                            except Exception as e:
-                                                print(f"{student.rollno} {e}")
-
+                                            pass
                                 except Exception as e:
                                     print(f"{student.rollno} {e}")
+                                    
+                            for choice in choices:            
+                                try:
+                                    if student.selectedDept is None :
+                                        if (
+                                            waiting[choice] > 0
+                                            and student.waiting_list1 is None
+                                        ):
+                                            student.waiting_list1 = choice
+                                            waiting[choice] -= 1
+                                            student.save()
+                                        elif (
+                                            waiting[choice] > 0
+                                            and student.waiting_list2 is None
+                                        ):
+                                            student.waiting_list2 = choice
+                                            waiting[choice] -= 1
+                                            student.save()
+                                        elif (
+                                            waiting[choice] > 0
+                                            and student.waiting_list3 is None
+                                        ):
+                                            student.waiting_list3 = choice
+                                            waiting[choice] -= 1
+                                            student.save()
+                                        print(f"{waiting} for {student.rollno}")
+                                    else :
+                                        pass
+                                except Exception as e:
+                                    print(f"{student.rollno} {e}")
+
+                                
                     students_order = MinorsModel.objects.filter(
                         selectedDept=None
                     ).order_by("-scgpa")
