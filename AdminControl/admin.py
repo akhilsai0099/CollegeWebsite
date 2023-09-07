@@ -68,8 +68,6 @@ class UserDataControl(admin.ModelAdmin):
                 credits = row[5]
                 total_grade = row[6]
 
-            
-                
                 try:
                     userdata=UserData.objects.get(rollno=rollno)
                     scgpa=((float(userdata.scgpa)*float(userdata.total_credits))+(float(sgpa)*float(credits)))/(float(userdata.total_credits)+float(credits))
@@ -142,7 +140,7 @@ class HonorsModelControl(admin.ModelAdmin):
         body = {"form": form}
         return render(request, "admin/upload-honors.html", body)
 
-    def filterHonors(self, request):
+    def filterHonors(self, request):  # sourcery skip: extract-method
         if request.method == "POST":
             batch = request.POST['batchCode']
             unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
@@ -166,27 +164,27 @@ class HonorsModelControl(admin.ModelAdmin):
                         record.save()
                         
                         #for waiting list students
-                #         waiting_list_rollno = []
-                # for dept in unique_depts:
-                #     waiting_list_records = HonorsModel.objects.filter(
-                #         dept=dept, selectedDept=None
-                #     ).order_by("-scgpa")[:WAITING_NUMBER]
-                #     waiting_list_rollno.extend(
-                #         waiting_list_records.values_list("rollno", flat=True)
-                #     )
-                #     for students in waiting_list_records:
-                #         try:
-                #             UserData.objects.get(
-                #                 rollno=students.rollno
-                #             ).update_honors_dept("WL")
-                #         except Exception as e:
-                #             print(f"{students.rollno} {e}")
+                waiting_list_rollno = []
+                for dept in unique_depts:
+                    waiting_list_records = HonorsModel.objects.filter(
+                        dept=dept, selectedDept=None
+                    ).order_by("-scgpa")[:WAITING_NUMBER]
+                    waiting_list_rollno.extend(
+                        waiting_list_records.values_list("rollno", flat=True)
+                    )
+                    for students in waiting_list_records:
+                        try:
+                            UserData.objects.get(
+                                rollno=students.rollno
+                            ).update_honors_dept("WL")
+                        except Exception as e:
+                            print(f"{students.rollno} {e}")
 
-                #         students.waiting_list = "WL"
-                #         students.save()
-                #     print("students who are in waiting lists are...")
-                #     for students in waiting_list_records:
-                #         print(students.rollno)
+                        students.waiting_list = "WL"
+                        students.save()
+                    print("students who are in waiting lists are...")
+                    for students in waiting_list_records:
+                        print(students.rollno)
 
                 HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
                 MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
