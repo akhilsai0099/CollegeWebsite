@@ -46,6 +46,7 @@ class HonorsModel(models.Model):
     scgpa = models.DecimalField(max_digits=3, decimal_places=2)
     batchCode = models.CharField(max_length=9)
     selectedDept = models.CharField(max_length=5, default=None, null=True)
+    waiting_list = models.CharField(max_length=5, null=True, default=None)
 
     def __str__(self):
         return self.rollno
@@ -58,10 +59,14 @@ class MinorsModel(models.Model):
     rollno = models.CharField(primary_key=True, max_length=10)
     courseChoice1 = models.CharField(max_length=5, default=None, null=True)
     courseChoice2 = models.CharField(max_length=5, default=None, null=True)
+    courseChoice3 = models.CharField(max_length=5, default=None, null=True)
     scgpa = models.DecimalField(max_digits=3, decimal_places=2)
     batchCode = models.CharField(max_length=9)
     selectedDept = models.CharField(max_length=5, default=None, null=True)
-
+    waiting_list1 = models.CharField(max_length=5 , default = None,null = True)
+    waiting_list2 = models.CharField(max_length=5 , default = None,null = True)
+    waiting_list3 = models.CharField(max_length=5 , default = None,null = True)
+    
     def __str__(self):
         return self.rollno
 

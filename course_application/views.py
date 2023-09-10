@@ -62,7 +62,7 @@ def honorsMinorsFormSubmit(request):
                     f"{honors} for Honors Application and {minors} for Minors Application",
                 )
         elif appliedForHonors and not appliedForMinors:
-            honors = applyHonors(request, studentdata, cgpa)
+            honors = applyHonors(request, studentdata,cgpa)
             MinorsModel.objects.filter(rollno=student.username).delete()
             if honors == "Unable to submit":
                 messages.error(request, f"{honors} for Honors Application")

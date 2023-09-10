@@ -5,14 +5,15 @@ from django.urls import path, reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponseRedirect
-
 from .forms import BatchForm
 from .views import upload_data_from_csv
 import csv
+from django.db.models import Q
 
 # Register your models here.
 
 FILTERNUMBER = 21
+WAITING_NUMBER = 3
 
 
 class CsvImportForm(forms.Form):
@@ -44,7 +45,7 @@ class UserDataControl(admin.ModelAdmin):
         if request.method == "POST":
             csv_file = request.FILES.get("csv_upload")
             batchCode = request.POST["batchCode"]
-            print(batchCode)
+            #print(batchCode)
 
             if not csv_file:
                 messages.warning(request, "Please upload a CSV file")
@@ -67,8 +68,6 @@ class UserDataControl(admin.ModelAdmin):
                 credits = row[5]
                 total_grade = row[6]
 
-            
-                
                 try:
                     userdata=UserData.objects.get(rollno=rollno)
                     scgpa=((float(userdata.scgpa)*float(userdata.total_credits))+(float(sgpa)*float(credits)))/(float(userdata.total_credits)+float(credits))
@@ -141,7 +140,7 @@ class HonorsModelControl(admin.ModelAdmin):
         body = {"form": form}
         return render(request, "admin/upload-honors.html", body)
 
-    def filterHonors(self, request):
+    def filterHonors(self, request):  # sourcery skip: extract-method
         if request.method == "POST":
             batch = request.POST['batchCode']
             unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
@@ -163,6 +162,29 @@ class HonorsModelControl(admin.ModelAdmin):
                             print(f"{record.rollno} {e}")
                         record.selectedDept = f"{dept}"
                         record.save()
+                        
+                        #for waiting list students
+                waiting_list_rollno = []
+                for dept in unique_depts:
+                    waiting_list_records = HonorsModel.objects.filter(
+                        dept=dept, selectedDept=None
+                    ).order_by("-scgpa")[:WAITING_NUMBER]
+                    waiting_list_rollno.extend(
+                        waiting_list_records.values_list("rollno", flat=True)
+                    )
+                    for students in waiting_list_records:
+                        try:
+                            UserData.objects.get(
+                                rollno=students.rollno
+                            ).update_honors_dept("WL")
+                        except Exception as e:
+                            print(f"{students.rollno} {e}")
+
+                        students.waiting_list = "WL"
+                        students.save()
+                    print("students who are in waiting lists are...")
+                    for students in waiting_list_records:
+                        print(students.rollno)
 
                 HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
                 MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
@@ -207,6 +229,7 @@ class MinorsModelControl(admin.ModelAdmin):
         "rollno",
         "courseChoice1",
         "courseChoice2",
+        "courseChoice3",
         "scgpa",
         "selectedDept",
     ]
@@ -228,7 +251,8 @@ class MinorsModelControl(admin.ModelAdmin):
                 (0, "rollno"),
                 (1, "courseChoice1"),
                 (2, "courseChoice2"),
-                (3, "scgpa"),
+                (3, "courseChoice3"),
+                (4, "scgpa"),
             ]
 
             upload_data_from_csv(request, MinorsModel, batchCode, field_mappings)
@@ -237,51 +261,78 @@ class MinorsModelControl(admin.ModelAdmin):
         body = {"form": form}
         return render(request, "admin/upload-minors.html", body)
 
-    def filter(self, available, unique_depts, courseChoice):
-        try:
-            top_records_rollno = []
-            for dept in unique_depts:
-                filter_condition = {courseChoice: dept, "selectedDept": None}
-                if available[dept] > 0:
-                    top_records = MinorsModel.objects.filter(
-                        **filter_condition
-                    ).order_by("-scgpa")[: available[dept]]
+    # def filter(self, available, unique_depts, courseChoice):
+    #     try:
+    #         top_records_rollno = []
+    #         for dept in unique_depts:
+    #             filter_condition = {courseChoice: dept, "selectedDept": None}
+    #             if available[dept] > 0:
+    #                 top_records = MinorsModel.objects.filter(
+    #                     **filter_condition
+    #                 ).order_by("-scgpa")[: available[dept]]
 
-                    top_record_ids = top_records.values_list("rollno", flat=True)
-                    top_records_rollno.extend(top_record_ids)
-                    available[dept] = (
-                        available[dept] - len(top_records_rollno)
-                        if available[dept] - len(top_records_rollno) > 0
-                        else 0
-                    )
+    #                 top_record_ids = top_records.values_list("rollno", flat=True)
+    #                 top_records_rollno.extend(top_record_ids)
+    #                 available[dept] = (
+    #                     available[dept] - len(top_records_rollno)
+    #                     if available[dept] - len(top_records_rollno) > 0
+    #                     else 0
+    #                 )
 
-                    for record in top_records:
-                        try:
-                            UserData.objects.get(
-                                rollno=record.rollno
-                            ).update_minors_dept(dept)
-                        except Exception as e:
-                            print(f"{record.rollno} {e}")
-                        record.selectedDept = f"{dept}"
-                        record.save()
+    #                 for record in top_records:
+    #                     try:
+    #                         UserData.objects.get(
+    #                             rollno=record.rollno
+    #                         ).update_minors_dept(dept)
+    #                     except Exception as e:
+    #                         print(f"{record.rollno} {e}")
+    #                     record.selectedDept = f"{dept}"
+    #                     record.save()
 
-        except Exception as e:
-            print(e)
+    #     except Exception as e:
+    #         print(e)
 
+    # def filterMinors(self, request):
+    #     if request.method == "POST":
+    #         is_honors_not_filterd = HonorsModel.objects.filter(
+    #             selectedDept=None
+    #         ).exists()
+    #         if not is_honors_not_filterd:
+    #             choice1_depts = MinorsModel.objects.values_list(
+    #                 "courseChoice1", flat=True
+    #             ).distinct()
+    #             choice2_depts = MinorsModel.objects.values_list(
+    #                 "courseChoice2", flat=True
+    #             ).distinct()
+    #             choice2_depts = [dept for dept in choice2_depts if dept != None]
+
+    #             available = {
+    #                 "CSE": FILTERNUMBER,
+    #                 "ECE": FILTERNUMBER,
+    #                 "IT": FILTERNUMBER,
+    #                 "CIVIL": FILTERNUMBER,
+    #                 "MECH": FILTERNUMBER,
+    #                 "MET": FILTERNUMBER,
+    #                 "EEE": FILTERNUMBER,
+    #             }
+    #             self.filter(available, choice1_depts, "courseChoice1")
+    #             self.filter(available, choice2_depts, "courseChoice2")
+    #             MinorsModel.objects.filter(selectedDept=None).delete()
+    #             messages.success(request, "Data has been filtered")
+    #         else:
+    #             messages.error(
+    #                 request,
+    #                 "You have not filterd Honors data, Please filter Honors data before filtering minors data",
+    #             )
+    #     return redirect("/admin/AdminControl/minorsmodel")
+    
     def filterMinors(self, request):
         if request.method == "POST":
+            batch = request.POST['batchCode']
             is_honors_not_filterd = HonorsModel.objects.filter(
                 selectedDept=None
             ).exists()
             if not is_honors_not_filterd:
-                choice1_depts = MinorsModel.objects.values_list(
-                    "courseChoice1", flat=True
-                ).distinct()
-                choice2_depts = MinorsModel.objects.values_list(
-                    "courseChoice2", flat=True
-                ).distinct()
-                choice2_depts = [dept for dept in choice2_depts if dept != None]
-
                 available = {
                     "CSE": FILTERNUMBER,
                     "ECE": FILTERNUMBER,
@@ -291,16 +342,102 @@ class MinorsModelControl(admin.ModelAdmin):
                     "MET": FILTERNUMBER,
                     "EEE": FILTERNUMBER,
                 }
-                self.filter(available, choice1_depts, "courseChoice1")
-                self.filter(available, choice2_depts, "courseChoice2")
-                MinorsModel.objects.filter(selectedDept=None).delete()
-                messages.success(request, "Data has been filtered")
+                waiting = {
+                    "CSE": WAITING_NUMBER,
+                    "ECE": WAITING_NUMBER,
+                    "IT": WAITING_NUMBER,
+                    "CIVIL": WAITING_NUMBER,
+                    "MECH": WAITING_NUMBER,
+                    "MET": WAITING_NUMBER,
+                    "EEE": WAITING_NUMBER,
+                }
+                #students_order = MinorsModel.objects.all().order_by("-scgpa")
+                students_order = MinorsModel.objects.filter(batchCode = batch).order_by("-scgpa")
+                try:
+                    for student in students_order:
+                        if student.selectedDept is None:
+                            choices = [
+                                student.courseChoice1.strip()
+                                if student.courseChoice1
+                                else None,
+                                student.courseChoice2.strip()
+                                if student.courseChoice2
+                                else None,
+                                student.courseChoice3.strip()
+                                if student.courseChoice3
+                                else None,
+                            ]
+
+                            # strip is a function used to remove the trailing spaces and leading spaces
+                            for choice in choices:
+                                try:
+                                    if student.selectedDept is None:
+                                        if available[choice] > 0:
+                                            try:
+                                                student.selectedDept = choice
+                                                user = UserData.objects.get(
+                                                    rollno=student.rollno
+                                                )
+                                                user.minorsDept = choice
+                                                user.save()
+                                                student.save()
+                                                available[choice] -= 1
+                                            except Exception as e:
+                                                print(f"{student.rollno} {e}")
+                                        else:
+                                            pass
+                                except Exception as e:
+                                    print(f"{student.rollno} {e}")
+                                    
+                            for choice in choices:            
+                                try:
+                                    if student.selectedDept is None :
+                                        if (
+                                            waiting[choice] > 0
+                                            and student.waiting_list1 is None
+                                        ):
+                                            student.waiting_list1 = choice
+                                            waiting[choice] -= 1
+                                            student.save()
+                                        elif (
+                                            waiting[choice] > 0
+                                            and student.waiting_list2 is None
+                                        ):
+                                            student.waiting_list2 = choice
+                                            waiting[choice] -= 1
+                                            student.save()
+                                        elif (
+                                            waiting[choice] > 0
+                                            and student.waiting_list3 is None
+                                        ):
+                                            student.waiting_list3 = choice
+                                            waiting[choice] -= 1
+                                            student.save()
+                                        print(f"{waiting} for {student.rollno}")
+                                    else :
+                                        pass
+                                except Exception as e:
+                                    print(f"{student.rollno} {e}")
+
+                                
+                    students_order = MinorsModel.objects.filter(
+                        selectedDept=None
+                    ).order_by("-scgpa")
+                except Exception as e:
+                    messages.error(f"{student.rollno} {e}")
+                print(batch)
+                MinorsModel.objects.filter(batchCode= batch,selectedDept = None).delete()
+                #MinorsModel.objects.all().delete()
+                messages.success(request, "Data has been filtered successfully")
             else:
                 messages.error(
                     request,
                     "You have not filterd Honors data, Please filter Honors data before filtering minors data",
                 )
-        return redirect("/admin/AdminControl/minorsmodel")
+        form = BatchForm()
+        context = {'form': form}
+        return render(request, "admin/filterMinors.html",context)
+
 
     def download_csv(self, request):
         if request.method == "POST":
