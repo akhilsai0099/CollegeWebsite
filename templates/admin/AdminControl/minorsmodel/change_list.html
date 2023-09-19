@@ -27,76 +27,10 @@
 
 
 <a href="uploadMinors/"><button class="button">Upload data</button></a>
-<!-- <button class="button" onclick="buttonClicked()">Download CSV</button> -->
+<a href="downloadMinorsData"> <button class="button">Download CSV</button></a>
+<a href="downloadMinorsWaitlist"><button class="button"> Download Waitlist</button></a>
 
-<form action="downloadMinorsData/" method="post">
-    {% csrf_token%}
-    <button class="button" type="submit">Download Selected CSV</button>
-</form>
 
-<!-- <button class="button" onclick="buttonClicked2()">Download Minors Waiting List</button> -->
-<form action="downloadMinorsWaitlist/" method="post">
-    {% csrf_token%}
-    <button class="button" type="submit">Download Minors Waitlist</button>
-</form>
-
-<!-- <script>
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                // Check if the cookie name matches the desired name
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    // Extract and decode the cookie value
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    function buttonClicked() {
-        console.log('done')
-        var xhr = new XMLHttpRequest();
-
-        // Configure the request
-        xhr.open('POST', '/admin/AdminControl/minorsmodel/downloadMinorsData/', true);
-        xhr.responseType = 'blob';  // Set the response type to 'blob'
-
-        // Retrieve the CSRF token from the cookie
-        var csrftoken = getCookie('csrftoken');
-
-        // Set the CSRF token in the request header
-        xhr.setRequestHeader('X-CSRFToken', csrftoken);
-
-        // Handle the response when it arrives
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // Create a download link element
-                var downloadLink = document.createElement('a');
-                downloadLink.href = URL.createObjectURL(xhr.response);
-                downloadLink.download = 'minorsData.csv';  // Specify the desired filename
-
-                // Append the download link to the document body
-                document.body.appendChild(downloadLink);
-
-                // Trigger the download
-                downloadLink.click();
-
-                // Clean up by removing the download link
-                document.body.removeChild(downloadLink);
-            } else {
-                // Request was not successful, handle the error here
-                console.error('Request failed. Status:', xhr.status);
-            }
-        };
-        // Send the request
-        xhr.send();
-
-    }
-</script> -->
 
 {{ block.super }}
 {% endblock %}

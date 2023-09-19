@@ -199,8 +199,9 @@ class HonorsModelControl(admin.ModelAdmin):
 
     def download_csv(self, request):
         if request.method == "POST":
+            batch = request.POST['batchCode']
             unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
-            file_path = f"honors.csv"
+            file_path = f"Honors {batch}.csv"
             with open(file_path, "w", newline="", encoding="utf-8-sig") as csvfile:
                 for selected_dept in unique_depts:
                     writer = csv.writer(csvfile)
@@ -209,7 +210,7 @@ class HonorsModelControl(admin.ModelAdmin):
                             selected_dept,
                         ]
                     )
-                    honors_data = HonorsModel.objects.filter(selectedDept=selected_dept)
+                    honors_data = HonorsModel.objects.filter(selectedDept=selected_dept, batchCode= batch)
 
                     roll_numbers = [honors.rollno for honors in honors_data]
                     for roll_number in roll_numbers:
@@ -219,12 +220,14 @@ class HonorsModelControl(admin.ModelAdmin):
             file_response["Content-Disposition"] = f'attachment; filename="{file_path}"'
             return file_response
 
-        return render(request, "admin/downloadCsv.html")
+        form = BatchForm()
+        return render(request, "admin/downloadCsv.html",{'form':form})
     
     def download_waitlist_csv(self, request):
         if request.method == "POST":
+            batch = request.POST['batchCode']
             unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
-            file_path = f"honors_waitingList.csv"
+            file_path = f"Honors_waitingList {batch}.csv"
             with open(file_path, "w", newline="", encoding="utf-8-sig") as csvfile:
                 for selected_dept in unique_depts:
                     writer = csv.writer(csvfile)
@@ -233,7 +236,7 @@ class HonorsModelControl(admin.ModelAdmin):
                             selected_dept,
                         ]
                     )
-                    honors_data = HonorsModel.objects.filter(waiting_list=selected_dept)
+                    honors_data = HonorsModel.objects.filter(waiting_list=selected_dept, batchCode = batch)
 
                     roll_numbers = [honors.rollno for honors in honors_data]
                     for roll_number in roll_numbers:
@@ -243,7 +246,8 @@ class HonorsModelControl(admin.ModelAdmin):
             file_response["Content-Disposition"] = f'attachment; filename="{file_path}"'
             return file_response
 
-        return render(request, "admin/downloadCsv.html")
+        form = BatchForm()
+        return render(request, "admin/downloadCsv.html",{'form':form})
 
 
 class MinorsModelControl(admin.ModelAdmin):
@@ -465,11 +469,12 @@ class MinorsModelControl(admin.ModelAdmin):
 
     def download_csv(self, request):
         if request.method == "POST":
+            batch = request.POST['batchCode']
             unique_depts = MinorsModel.objects.values_list(
                 "selectedDept", flat=True
             ).distinct()
             unique_depts = [dept for dept in unique_depts if dept != None]
-            file_path = f"minors.csv"
+            file_path = f"Minors {batch}.csv"
             with open(file_path, "w", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(["Minors Data"])
@@ -479,7 +484,7 @@ class MinorsModelControl(admin.ModelAdmin):
                             selected_dept,
                         ]
                     )
-                    minors_data = MinorsModel.objects.filter(selectedDept=selected_dept)
+                    minors_data = MinorsModel.objects.filter(selectedDept=selected_dept, batchCode=batch)
 
                     roll_numbers = [minors.rollno for minors in minors_data]
                     for roll_number in roll_numbers:
@@ -488,16 +493,18 @@ class MinorsModelControl(admin.ModelAdmin):
             file_response = FileResponse(open(file_path, "rb"))
             file_response["Content-Disposition"] = f'attachment; filename="{file_path}"'
             return file_response
-
-        return render(request, "admin/downloadCsv.html")
+        
+        form = BatchForm()
+        return render(request, "admin/downloadCsv.html",{'form':form})
     
     def download_minors_csv(self, request):
         if request.method == "POST":
+            batch = request.POST['batchCode']
             unique_depts = MinorsModel.objects.values_list(
                 "selectedDept", flat=True
             ).distinct()
             unique_depts = [dept for dept in unique_depts if dept != None]
-            file_path = f"minors_waitlist.csv"
+            file_path = f"Minors_waitlist {batch}.csv"
             with open(file_path, "w", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(["Minors Data"])
@@ -510,8 +517,8 @@ class MinorsModelControl(admin.ModelAdmin):
                     minors_data = MinorsModel.objects.filter(
                                     Q(waiting_list1=selected_dept) | 
                                     Q(waiting_list2=selected_dept) | 
-                                    Q(waiting_list3=selected_dept)
-                                )
+                                    Q(waiting_list3=selected_dept) &
+                                    Q(batchCode = batch))
 
                     roll_numbers = [minors.rollno for minors in minors_data]
                     for roll_number in roll_numbers:
@@ -521,7 +528,8 @@ class MinorsModelControl(admin.ModelAdmin):
             file_response["Content-Disposition"] = f'attachment; filename="{file_path}"'
             return file_response
 
-        return render(request, "admin/downloadCsv.html")
+        form = BatchForm()
+        return render(request, "admin/downloadCsv.html",{'form':form})
 
 
 

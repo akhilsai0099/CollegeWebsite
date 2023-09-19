@@ -4,9 +4,10 @@
 <div>
     <form action="." method="POST" enctype="multipart/form-data">
         {% csrf_token%}
+        {{ form.as_p }}
         <button type="submit" class="button" style="padding: 6px;">Download CSV</button>
     </form>
     <br>
-    <a href="/admin/AdminControl/honorsmodel/" class="button">Back</a>
+    <a href="../" class="button">Back</a>
 </div>
 {% endblock %}
