@@ -27,11 +27,17 @@
     <a href="filterHonors/"><button class="button" type="submit">Filter Honors Students</button></a>
 
 <a href="uploadHonors/"><button class="button">Upload data</button></a>
-<button class="button" onclick="buttonClicked()">Download CSV</button>
 
-<button class="button" onclick="#" >Download Waiting List</button>
+<form action="downloadHonorsData/" method="post">
+    {% csrf_token%}
+    <button class="button" type="submit">Download Selected CSV</button>
+</form>
+<form action="downloadHonorsWaitlist/" method="post">
+    {% csrf_token%}
+    <button class="button" type="submit">Download Waitlist</button>
+</form>
 
-<script>
+<!-- <script>
 
     function getCookie(name) {
         var cookieValue = null;
@@ -88,7 +94,7 @@
         xhr.send();
 
     }
-</script>
+</script> -->
 
 {{ block.super }}
 {% endblock %}

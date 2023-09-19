@@ -27,10 +27,20 @@
 
 
 <a href="uploadMinors/"><button class="button">Upload data</button></a>
-<button class="button" onclick="buttonClicked()">Download CSV</button>
-<button class="button" onclick="buttonClicked2()">Download Minors Waiting List</button>
+<!-- <button class="button" onclick="buttonClicked()">Download CSV</button> -->
 
-<script>
+<form action="downloadMinorsData/" method="post">
+    {% csrf_token%}
+    <button class="button" type="submit">Download Selected CSV</button>
+</form>
+
+<!-- <button class="button" onclick="buttonClicked2()">Download Minors Waiting List</button> -->
+<form action="downloadMinorsWaitlist/" method="post">
+    {% csrf_token%}
+    <button class="button" type="submit">Download Minors Waitlist</button>
+</form>
+
+<!-- <script>
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -86,7 +96,7 @@
         xhr.send();
 
     }
-</script>
+</script> -->
 
 {{ block.super }}
 {% endblock %}

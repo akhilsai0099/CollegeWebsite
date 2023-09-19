@@ -10,8 +10,6 @@ from .views import upload_data_from_csv
 import csv
 from django.db.models import Q
 
-# Register your models here.
-
 FILTERNUMBER = 21
 WAITING_NUMBER = 3
 
@@ -121,6 +119,7 @@ class HonorsModelControl(admin.ModelAdmin):
             path("filterHonors/", self.filterHonors),
             path("uploadHonors/", self.uploadHonors),
             path("downloadHonorsData/", self.download_csv),
+            path("downloadHonorsWaitlist/", self.download_waitlist_csv),
         ]
         return my_urls + urls
 
@@ -221,6 +220,30 @@ class HonorsModelControl(admin.ModelAdmin):
             return file_response
 
         return render(request, "admin/downloadCsv.html")
+    
+    def download_waitlist_csv(self, request):
+        if request.method == "POST":
+            unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
+            file_path = f"honors_waitingList.csv"
+            with open(file_path, "w", newline="", encoding="utf-8-sig") as csvfile:
+                for selected_dept in unique_depts:
+                    writer = csv.writer(csvfile)
+                    writer.writerow(
+                        [
+                            selected_dept,
+                        ]
+                    )
+                    honors_data = HonorsModel.objects.filter(waiting_list=selected_dept)
+
+                    roll_numbers = [honors.rollno for honors in honors_data]
+                    for roll_number in roll_numbers:
+                        writer.writerow(["", roll_number])
+
+            file_response = FileResponse(open(file_path, "rb"))
+            file_response["Content-Disposition"] = f'attachment; filename="{file_path}"'
+            return file_response
+
+        return render(request, "admin/downloadCsv.html")
 
 
 class MinorsModelControl(admin.ModelAdmin):
@@ -241,6 +264,7 @@ class MinorsModelControl(admin.ModelAdmin):
             path("filterMinors/", self.filterMinors),
             path("uploadMinors/", self.uploadMinors),
             path("downloadMinorsData/", self.download_csv),
+            path("downloadMinorsWaitlist/", self.download_minors_csv),
         ]
         return my_urls + urls
 
@@ -466,6 +490,39 @@ class MinorsModelControl(admin.ModelAdmin):
             return file_response
 
         return render(request, "admin/downloadCsv.html")
+    
+    def download_minors_csv(self, request):
+        if request.method == "POST":
+            unique_depts = MinorsModel.objects.values_list(
+                "selectedDept", flat=True
+            ).distinct()
+            unique_depts = [dept for dept in unique_depts if dept != None]
+            file_path = f"minors_waitlist.csv"
+            with open(file_path, "w", newline="") as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(["Minors Data"])
+                for selected_dept in unique_depts:
+                    writer.writerow(
+                        [
+                            selected_dept,
+                        ]
+                    )
+                    minors_data = MinorsModel.objects.filter(
+                                    Q(waiting_list1=selected_dept) | 
+                                    Q(waiting_list2=selected_dept) | 
+                                    Q(waiting_list3=selected_dept)
+                                )
+
+                    roll_numbers = [minors.rollno for minors in minors_data]
+                    for roll_number in roll_numbers:
+                        writer.writerow(["", roll_number])
+
+            file_response = FileResponse(open(file_path, "rb"))
+            file_response["Content-Disposition"] = f'attachment; filename="{file_path}"'
+            return file_response
+
+        return render(request, "admin/downloadCsv.html")
+
 
 
 class Batch(admin.ModelAdmin):
