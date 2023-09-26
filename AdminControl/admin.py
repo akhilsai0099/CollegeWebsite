@@ -110,7 +110,7 @@ class UserDataControl(admin.ModelAdmin):
 
 
 class HonorsModelControl(admin.ModelAdmin):
-    list_display = ['batchCode',"rollno", "dept", "scgpa", "selectedDept"]
+    list_display = ['batchCode',"rollno", "dept", "scgpa", "selectedDept","waiting_list"]
     ordering = ["dept", "-scgpa"]
     
     def get_urls(self):
@@ -171,23 +171,24 @@ class HonorsModelControl(admin.ModelAdmin):
                     waiting_list_rollno.extend(
                         waiting_list_records.values_list("rollno", flat=True)
                     )
+                    
                     for students in waiting_list_records:
-                        try:
-                            UserData.objects.get(
-                                rollno=students.rollno
-                            ).update_honors_dept("WL")
-                        except Exception as e:
-                            print(f"{students.rollno} {e}")
+                        # try:
+                        #     UserData.objects.get(
+                        #         rollno=students.rollno
+                        #     ).update_honors_dept("WL")
+                        # except Exception as e:
+                        #     print(f"{students.rollno} {e}")
 
                         students.waiting_list = "WL"
                         students.save()
-                    print("students who are in waiting lists are...")
-                    for students in waiting_list_records:
-                        print(students.rollno)
-
-                HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
+                    
                 MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
+                for student in waiting_list_rollno:
+                    top_records_rollno.append(student)
 
+                HonorsModel.objects.filter(batchCode=batch).exclude(rollno__in=top_records_rollno).delete()
+                #HonorsModel.objects.all().delete()
                 messages.success(request, "Data has been filtered")
                 return redirect("/admin/AdminControl/honorsmodel/")
             except Exception as e:
@@ -236,7 +237,7 @@ class HonorsModelControl(admin.ModelAdmin):
                             selected_dept,
                         ]
                     )
-                    honors_data = HonorsModel.objects.filter(waiting_list=selected_dept, batchCode = batch)
+                    honors_data = HonorsModel.objects.filter(waiting_list="WL", batchCode = batch,dept=selected_dept)
 
                     roll_numbers = [honors.rollno for honors in honors_data]
                     for roll_number in roll_numbers:
@@ -259,6 +260,9 @@ class MinorsModelControl(admin.ModelAdmin):
         "courseChoice3",
         "scgpa",
         "selectedDept",
+        "waiting_list1",
+        "waiting_list2",
+        "waiting_list3",
     ]
     ordering = ["rollno", "-scgpa", "courseChoice1"]
 
@@ -358,8 +362,8 @@ class MinorsModelControl(admin.ModelAdmin):
         if request.method == "POST":
             batch = request.POST['batchCode']
             is_honors_not_filterd = HonorsModel.objects.filter(
-                selectedDept=None
-            ).exists()
+                Q(batchCode = batch,selectedDept=None) 
+            ).filter(Q(waiting_list=None)).exists()
             if not is_honors_not_filterd:
                 available = {
                     "CSE": FILTERNUMBER,
@@ -380,7 +384,7 @@ class MinorsModelControl(admin.ModelAdmin):
                     "EEE": WAITING_NUMBER,
                 }
                 #students_order = MinorsModel.objects.all().order_by("-scgpa")
-                students_order = MinorsModel.objects.filter(batchCode = batch).order_by("-scgpa")
+                students_order = MinorsModel.objects.filter(batchCode = batch).filter(selectedDept = None).order_by("-scgpa")
                 try:
                     for student in students_order:
                         if student.selectedDept is None:
@@ -448,13 +452,24 @@ class MinorsModelControl(admin.ModelAdmin):
                                     print(f"{student.rollno} {e}")
 
                                 
-                    students_order = MinorsModel.objects.filter(
-                        selectedDept=None
-                    ).order_by("-scgpa")
+                    # students_order = MinorsModel.objects.filter(
+                    #     selectedDept=None
+                    # ).order_by("-scgpa")
                 except Exception as e:
                     messages.error(f"{student.rollno} {e}")
                 print(batch)
-                MinorsModel.objects.filter(batchCode= batch,selectedDept = None).delete()
+                # MinorsModel.objects.filter(batchCode=batch).exclude(rollno__in=top_records_rollno).delete()
+                # MinorsModel.objects.filter(batchCode= batch).exclude(Q(selectedDept__isnull = False),waiting_list1__isnull = False,waiting_list2__isnull = False,waiting_list3__isnull = False).delete()
+
+                MinorsModel.objects.filter(
+                    batchCode=batch
+                ).exclude(
+                    Q(selectedDept__isnull=False) | 
+                    Q(waiting_list1__isnull=False) | 
+                    Q(waiting_list2__isnull=False) | 
+                    Q(waiting_list3__isnull=False)
+                ).delete()
+
                 #MinorsModel.objects.all().delete()
                 messages.success(request, "Data has been filtered successfully")
             else:
