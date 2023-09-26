@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from .models import UserData, HonorsModel, MinorsModel, BatchCode
 from django import forms
-from django.urls import path, reverse
+from django.urls import path
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import FileResponse, HttpResponseRedirect
@@ -94,7 +94,7 @@ class UserDataControl(admin.ModelAdmin):
                     )
                     messages.success(request, f"Data added for Roll No: {rollno}")
 
-                    
+
                 except Exception as e:
                     messages.error(
                         request,
@@ -110,9 +110,8 @@ class UserDataControl(admin.ModelAdmin):
 
 
 class HonorsModelControl(admin.ModelAdmin):
-    list_display = ['batchCode',"rollno", "dept", "scgpa", "selectedDept"]
+    list_display = ['batchCode',"rollno", "dept", "scgpa", "selectedDept","waiting_list"]
     ordering = ["dept", "-scgpa"]
-    
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
@@ -139,14 +138,14 @@ class HonorsModelControl(admin.ModelAdmin):
         body = {"form": form}
         return render(request, "admin/upload-honors.html", body)
 
-    def filterHonors(self, request):  # sourcery skip: extract-method
+    def filterHonors(self, request):
         if request.method == "POST":
             batch = request.POST['batchCode']
             unique_depts = HonorsModel.objects.values_list("dept", flat=True).distinct()
             try:
                 top_records_rollno = []
                 for dept in unique_depts:
-                    top_records = HonorsModel.objects.filter(dept=dept,batchCode=batch).order_by(
+                    top_records = HonorsModel.objects.filter(batchCode=batch, dept=dept).order_by(
                         "-scgpa"
                     )[:FILTERNUMBER]
                     top_record_ids = top_records.values_list("rollno", flat=True)
@@ -161,7 +160,6 @@ class HonorsModelControl(admin.ModelAdmin):
                             print(f"{record.rollno} {e}")
                         record.selectedDept = f"{dept}"
                         record.save()
-                        
                         #for waiting list students
                 waiting_list_rollno = []
                 for dept in unique_depts:
@@ -172,12 +170,7 @@ class HonorsModelControl(admin.ModelAdmin):
                         waiting_list_records.values_list("rollno", flat=True)
                     )
                     for students in waiting_list_records:
-                        try:
-                            UserData.objects.get(
-                                rollno=students.rollno
-                            ).update_honors_dept("WL")
-                        except Exception as e:
-                            print(f"{students.rollno} {e}")
+                        
 
                         students.waiting_list = "WL"
                         students.save()
@@ -185,8 +178,8 @@ class HonorsModelControl(admin.ModelAdmin):
                     for students in waiting_list_records:
                         print(students.rollno)
 
-                HonorsModel.objects.exclude(rollno__in=top_records_rollno).delete()
-                MinorsModel.objects.filter(rollno__in=top_records_rollno).delete()
+                HonorsModel.objects.filter(batchCode = batch).exclude( rollno__in=top_records_rollno).delete()
+                MinorsModel.objects.filter( batchCode = batch, rollno__in=top_records_rollno).delete()
 
                 messages.success(request, "Data has been filtered")
                 return redirect("/admin/AdminControl/honorsmodel/")
@@ -222,7 +215,7 @@ class HonorsModelControl(admin.ModelAdmin):
 
         form = BatchForm()
         return render(request, "admin/downloadCsv.html",{'form':form})
-    
+
     def download_waitlist_csv(self, request):
         if request.method == "POST":
             batch = request.POST['batchCode']
@@ -236,7 +229,7 @@ class HonorsModelControl(admin.ModelAdmin):
                             selected_dept,
                         ]
                     )
-                    honors_data = HonorsModel.objects.filter(waiting_list=selected_dept, batchCode = batch)
+                    honors_data = HonorsModel.objects.filter(waiting_list="WL", batchCode = batch,dept=selected_dept)
 
                     roll_numbers = [honors.rollno for honors in honors_data]
                     for roll_number in roll_numbers:
@@ -353,13 +346,13 @@ class MinorsModelControl(admin.ModelAdmin):
     #                 "You have not filterd Honors data, Please filter Honors data before filtering minors data",
     #             )
     #     return redirect("/admin/AdminControl/minorsmodel")
-    
+
     def filterMinors(self, request):
         if request.method == "POST":
             batch = request.POST['batchCode']
             is_honors_not_filterd = HonorsModel.objects.filter(
-                selectedDept=None
-            ).exists()
+                Q(batchCode = batch,selectedDept=None) 
+            ).filter(Q(waiting_list=None)).exists()
             if not is_honors_not_filterd:
                 available = {
                     "CSE": FILTERNUMBER,
@@ -416,8 +409,8 @@ class MinorsModelControl(admin.ModelAdmin):
                                             pass
                                 except Exception as e:
                                     print(f"{student.rollno} {e}")
-                                    
-                            for choice in choices:            
+
+                            for choice in choices:
                                 try:
                                     if student.selectedDept is None :
                                         if (
@@ -447,7 +440,7 @@ class MinorsModelControl(admin.ModelAdmin):
                                 except Exception as e:
                                     print(f"{student.rollno} {e}")
 
-                                
+
                     students_order = MinorsModel.objects.filter(
                         selectedDept=None
                     ).order_by("-scgpa")
@@ -493,10 +486,10 @@ class MinorsModelControl(admin.ModelAdmin):
             file_response = FileResponse(open(file_path, "rb"))
             file_response["Content-Disposition"] = f'attachment; filename="{file_path}"'
             return file_response
-        
+
         form = BatchForm()
         return render(request, "admin/downloadCsv.html",{'form':form})
-    
+
     def download_minors_csv(self, request):
         if request.method == "POST":
             batch = request.POST['batchCode']
@@ -515,8 +508,8 @@ class MinorsModelControl(admin.ModelAdmin):
                         ]
                     )
                     minors_data = MinorsModel.objects.filter(
-                                    Q(waiting_list1=selected_dept) | 
-                                    Q(waiting_list2=selected_dept) | 
+                                    Q(waiting_list1=selected_dept) |
+                                    Q(waiting_list2=selected_dept) |
                                     Q(waiting_list3=selected_dept) &
                                     Q(batchCode = batch))
 
