@@ -170,16 +170,12 @@ class HonorsModelControl(admin.ModelAdmin):
                         waiting_list_records.values_list("rollno", flat=True)
                     )
                     for students in waiting_list_records:
-                        
-
                         students.waiting_list = "WL"
                         students.save()
-                    print("students who are in waiting lists are...")
-                    for students in waiting_list_records:
-                        print(students.rollno)
 
-                HonorsModel.objects.filter(batchCode = batch).exclude( rollno__in=top_records_rollno).delete()
                 MinorsModel.objects.filter( batchCode = batch, rollno__in=top_records_rollno).delete()
+                top_records_rollno.extend(waiting_list_rollno)
+                HonorsModel.objects.filter(batchCode = batch).exclude( rollno__in=top_records_rollno).delete()
 
                 messages.success(request, "Data has been filtered")
                 return redirect("/admin/AdminControl/honorsmodel/")
