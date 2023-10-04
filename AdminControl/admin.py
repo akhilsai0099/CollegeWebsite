@@ -446,8 +446,16 @@ class MinorsModelControl(admin.ModelAdmin):
                 except Exception as e:
                     messages.error(f"{student.rollno} {e}")
                 print(batch)
-                MinorsModel.objects.filter(batchCode= batch,selectedDept = None).delete()
+                # MinorsModel.objects.filter(batchCode= batch,selectedDept = None).delete()
                 #MinorsModel.objects.all().delete()
+                MinorsModel.objects.filter(
+                    batchCode=batch
+                ).exclude(
+                    Q(selectedDept__isnull=False) | 
+                    Q(waiting_list1__isnull=False) | 
+                    Q(waiting_list2__isnull=False) | 
+                    Q(waiting_list3__isnull=False)
+                ).delete()
                 messages.success(request, "Data has been filtered successfully")
             else:
                 messages.error(
