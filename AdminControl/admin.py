@@ -248,6 +248,9 @@ class MinorsModelControl(admin.ModelAdmin):
         "courseChoice3",
         "scgpa",
         "selectedDept",
+        "waiting_list1",
+        "waiting_list2",
+        "waiting_list3",
     ]
     ordering = ["rollno", "-scgpa", "courseChoice1"]
 
